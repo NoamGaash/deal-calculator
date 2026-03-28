@@ -10,12 +10,7 @@ export function ScenarioPanel() {
 
   const activeScenario = scenarios.find(s => s.id === activeId);
 
-  const handleSave = () => {
-    if (activeScenario && !showSave) {
-      // Existing scenario — save immediately with current name
-      saveScenario(activeScenario.name);
-      return;
-    }
+  const handleSaveAs = () => {
     const name = saveName.trim() || activeScenario?.name;
     if (!name) return;
     saveScenario(name);
@@ -34,21 +29,34 @@ export function ScenarioPanel() {
       <div className="px-3 py-3 border-b border-gray-700">
         <p className="text-xs font-semibold text-gray-300 uppercase tracking-wide mb-2">תרחישים</p>
 
-        {/* Active scenario badge */}
+        {/* Active scenario indicator */}
         {activeScenario ? (
-          <div className="text-xs text-blue-400 truncate">{activeScenario.name}</div>
+          <div className="flex items-center justify-between">
+            <div className="text-xs text-blue-400 truncate">{activeScenario.name}</div>
+            <div className="text-[10px] text-gray-500">נשמר אוטומטית</div>
+          </div>
         ) : (
           <div className="text-xs text-gray-500">לא שמור</div>
         )}
 
-        {/* Save / New buttons */}
+        {/* Buttons */}
         <div className="flex gap-1.5 mt-2">
-          <button
-            onClick={handleSave}
-            className="flex-1 text-xs py-1 bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors"
-          >
-            {activeScenario ? 'שמור' : 'שמור...'}
-          </button>
+          {!activeScenario && (
+            <button
+              onClick={() => setShowSave(true)}
+              className="flex-1 text-xs py-1 bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors"
+            >
+              שמור...
+            </button>
+          )}
+          {activeScenario && (
+            <button
+              onClick={() => { setSaveName(activeScenario.name); setShowSave(v => !v); }}
+              className="flex-1 text-xs py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors"
+            >
+              שמור בשם...
+            </button>
+          )}
           <button
             onClick={newScenario}
             className="flex-1 text-xs py-1 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded transition-colors"
@@ -57,28 +65,18 @@ export function ScenarioPanel() {
           </button>
         </div>
 
-        {/* Save-as: show when no active scenario, or when explicitly requested */}
-        {activeScenario && (
-          <button
-            onClick={() => { setSaveName(activeScenario.name); setShowSave(v => !v); }}
-            className="mt-1 w-full text-xs py-0.5 text-gray-500 hover:text-gray-300 transition-colors text-right"
-          >
-            שמור בשם...
-          </button>
-        )}
-
-        {(!activeScenario || showSave) && (
+        {showSave && (
           <div className="mt-2 flex gap-1">
             <input
               value={saveName}
               onChange={e => setSaveName(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSave()}
+              onKeyDown={e => e.key === 'Enter' && handleSaveAs()}
               placeholder={activeScenario?.name ?? 'שם התרחיש'}
               className="flex-1 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-xs text-white outline-none focus:border-blue-500"
               autoFocus
             />
             <button
-              onClick={handleSave}
+              onClick={handleSaveAs}
               className="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-500"
             >
               ✓

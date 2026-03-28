@@ -26,18 +26,17 @@ test('save scenario A, create scenario B, switching back to A restores its price
   await expect(container.locator('input[type="number"]').first()).toHaveValue('1500000');
 });
 
-test('שמור button on existing scenario saves without a dialog', async ({ page }) => {
-  // Create and save
+test('changes are auto-saved — no save button needed before switching', async ({ page }) => {
+  // Create a named scenario
   await fillNumber(page, 'מחיר הנכס', 1_000_000);
   await page.locator('button', { hasText: 'שמור...' }).click();
   await page.locator('input[placeholder="שם התרחיש"]').fill('תרחיש');
   await page.locator('input[placeholder="שם התרחיש"]').press('Enter');
 
-  // Edit and re-save directly (no dialog)
+  // Edit WITHOUT clicking save
   await fillNumber(page, 'מחיר הנכס', 1_200_000);
-  await page.locator('button', { hasText: 'שמור' }).first().click();
 
-  // Switch away then back — should see the updated price
+  // Switch away then back — auto-save should have captured the change
   await page.locator('button', { hasText: 'חדש' }).click();
   await page.getByRole('button', { name: 'תרחיש' }).click();
   const container = page.locator('label').filter({ hasText: 'מחיר הנכס' }).first().locator('..');

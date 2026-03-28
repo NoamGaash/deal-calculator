@@ -28,7 +28,20 @@ export const useScenarioStore = create<ScenarioStore>()(
 
       setActiveId: (id) => set({ activeId: id }),
 
-      updateCurrent: (data) => set({ current: data }),
+      updateCurrent: (data) => {
+        const { activeId, scenarios } = get();
+        if (activeId) {
+          const now = new Date().toISOString();
+          set({
+            current: data,
+            scenarios: scenarios.map(s =>
+              s.id === activeId ? { ...s, data, updatedAt: now } : s
+            ),
+          });
+        } else {
+          set({ current: data });
+        }
+      },
 
       saveScenario: (name) => {
         const { activeId, current, scenarios } = get();
