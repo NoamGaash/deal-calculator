@@ -119,6 +119,14 @@ export function MortgancheTranche({ tranche: t, index, onChange, onRemove, canRe
               label={t.type === 'prime' ? 'ריבית בנק ישראל לפי תקופה' : 'ריבית בסיס לפי תקופה'}
             />
           )}
+
+          <button
+            onClick={onRemove}
+            disabled={!canRemove}
+            className="w-full py-1.5 text-xs rounded border border-dashed border-red-800 text-red-500 hover:bg-red-900/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            הסר מסלול
+          </button>
         </div>
       )}
     </div>
