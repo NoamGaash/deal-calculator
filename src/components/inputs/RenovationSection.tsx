@@ -85,7 +85,15 @@ export function RenovationSection({ entries, onChange }: Props) {
 
             {/* Value multiplier */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400 flex-shrink-0">{t('renovations.multiplierLabel')}</span>
+              <span className="text-xs text-gray-400 flex-shrink-0 flex items-center gap-1">
+                {t('renovations.multiplierLabel')}
+                <span title={t('renovations.multiplierTooltip')} className="cursor-help text-gray-500 hover:text-gray-300">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                    <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+                    <text x="8" y="12" textAnchor="middle" fontSize="10" fontWeight="bold">i</text>
+                  </svg>
+                </span>
+              </span>
               <input
                 type="number"
                 dir="ltr"

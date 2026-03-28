@@ -41,7 +41,8 @@
     "years": "years",
     "initialBadge": "Included in initial investment",
     "multiplierLabel": "Value multiplier",
-    "forcedEquity": "forced equity",
+    "multiplierTooltip": "How much value ₪1 of renovation creates. 1.0 = cost is fully recaptured. 1.4 = every ₪1 spent adds ₪1.40 to the property value (forced appreciation / השבחה יזומה). Use higher values for high-yield upgrades (kitchen, unit division) and lower for structural repairs.",
+    "forcedEquity": "השבחה יזומה",
     "add": "+ Add Renovation",
     "total": "Total Renovations"
   },

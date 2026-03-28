@@ -18,7 +18,7 @@ const HE = {
   purchaseTax: 'מס רכישה', broker: 'עמלת מתווך', attorney: 'שכ"ט עו"ד',
   consulting: 'ייעוץ משכנתא', appraisal: 'שמאות', totalCosts: 'סה"כ עלויות',
   renovations: '🔨 שיפוצים',
-  renoTitle: 'כותרת', renoCost: 'עלות', renoTiming: 'תזמון', renoEffect: 'השפעה',
+  renoTitle: 'כותרת', renoCost: 'עלות', renoMultiplier: 'מכפיל', renoValueAdd: 'ערך נוסף לנכס', renoTiming: 'תזמון', renoEffect: 'השפעה',
   atPurchase: 'ביום הרכישה', afterN: 'לאחר', inInitial: 'נכלל בהשקעה הראשונית', fromCashflow: 'מופחת מתזרים השוטף',
   mortgage: '🏦 מבנה המשכנתא',
   totalMortgage: 'סה"כ משכנתא', monthlyPayment: 'תשלום חודשי ראשוני',
@@ -72,7 +72,7 @@ const EN = {
   purchaseTax: 'Purchase Tax', broker: 'Broker Commission', attorney: 'Attorney Fee',
   consulting: 'Mortgage Consulting', appraisal: 'Appraisal', totalCosts: 'Total Costs',
   renovations: '🔨 Renovations',
-  renoTitle: 'Title', renoCost: 'Cost', renoTiming: 'Timing', renoEffect: 'Effect',
+  renoTitle: 'Title', renoCost: 'Cost', renoMultiplier: 'Multiplier', renoValueAdd: 'Value Added', renoTiming: 'Timing', renoEffect: 'Effect',
   atPurchase: 'At purchase', afterN: 'After', inInitial: 'Included in initial investment', fromCashflow: 'Deducted from cashflow',
   mortgage: '🏦 Mortgage Structure',
   totalMortgage: 'Total Mortgage', monthlyPayment: 'Initial Monthly Payment',
@@ -182,14 +182,17 @@ export function generateSummaryMarkdown(
   if (renovations.length > 0) {
     push(`## ${L.renovations}`);
     push(tbl(
-      [L.renoTitle, L.renoCost, L.renoTiming, L.renoEffect],
+      [L.renoTitle, L.renoCost, L.renoMultiplier, L.renoValueAdd, L.renoTiming, L.renoEffect],
       renovations.map(r => {
         const months = renovationToMonths(r);
         const isInitial = months <= 0;
         const timingStr = isInitial
           ? L.atPurchase
           : `${L.afterN} ${r.timingValue} ${language === 'he' ? (r.timingUnit === 'days' ? 'ימים' : r.timingUnit === 'months' ? 'חודשים' : 'שנים') : r.timingUnit}`;
-        return [r.title || '—', fmtILS(r.estimatedCost), timingStr, isInitial ? L.inInitial : L.fromCashflow];
+        const valueAdd = r.estimatedCost * r.multiplier;
+        const forcedEquity = valueAdd - r.estimatedCost;
+        const forcedEquityStr = forcedEquity > 0 ? ` (+${fmtILS(forcedEquity)} ${language === 'he' ? 'השבחה יזומה' : 'forced equity'})` : '';
+        return [r.title || '—', fmtILS(r.estimatedCost), `${r.multiplier}×`, `${fmtILS(valueAdd)}${forcedEquityStr}`, timingStr, isInitial ? L.inInitial : L.fromCashflow];
       })
     ));
     if (s.totalInitialRenovations > 0) {
