@@ -80,12 +80,18 @@ export function SummaryCards({ summary: s, holdingYears }: Props) {
       </div>
 
       {/* Bottom row — returns */}
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-5 gap-2">
         <Card
           label={`רווח נטו (${holdingYears} שנה)`}
           value={fmtILSShort(s.totalNetProfit)}
           sub={`מכירה ב-${fmtILSShort(s.projectedSalePrice)}`}
           color={s.totalNetProfit >= 0 ? 'green' : 'red'}
+        />
+        <Card
+          label="מס שבח"
+          value={s.capitalGainsTax > 0 ? fmtILSShort(s.capitalGainsTax) : 'פטור'}
+          sub={s.capitalGainsTax > 0 ? 'דירה נוספת — 25%' : 'דירה יחידה'}
+          color={s.capitalGainsTax > 0 ? 'red' : 'green'}
         />
         <Card
           label="ROI"

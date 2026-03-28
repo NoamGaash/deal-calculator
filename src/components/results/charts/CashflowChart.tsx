@@ -9,11 +9,13 @@ interface Props {
 }
 
 export function CashflowChart({ yearlyRows }: Props) {
+  const hasRenovations = yearlyRows.some(r => r.renovationCost > 0);
   const data = yearlyRows.map(r => ({
     year: `שנה ${r.year}`,
     'שכירות': Math.round(r.effectiveRentalIncome),
     'משכנתא': -Math.round(r.mortgagePayment),
     'הוצאות נוספות': -Math.round(r.maintenanceCost + r.managementFee + r.insuranceCost),
+    'שיפוצים': -Math.round(r.renovationCost),
     'תזרים נטו': Math.round(r.netCashflow),
   }));
 
@@ -34,7 +36,8 @@ export function CashflowChart({ yearlyRows }: Props) {
           <ReferenceLine y={0} stroke="#6b7280" />
           <Bar dataKey="שכירות" fill="#10b981" stackId="income" radius={[4, 4, 0, 0]} />
           <Bar dataKey="משכנתא" fill="#ef4444" stackId="expenses" />
-          <Bar dataKey="הוצאות נוספות" fill="#f97316" stackId="expenses" radius={[0, 0, 4, 4]} />
+          <Bar dataKey="הוצאות נוספות" fill="#f97316" stackId="expenses" radius={hasRenovations ? [0,0,0,0] : [0,0,4,4]} />
+          {hasRenovations && <Bar dataKey="שיפוצים" fill="#a78bfa" stackId="expenses" radius={[0, 0, 4, 4]} />}
           <Line dataKey="תזרים נטו" stroke="#60a5fa" strokeWidth={2} dot={false} type="monotone" />
         </ComposedChart>
       </ResponsiveContainer>

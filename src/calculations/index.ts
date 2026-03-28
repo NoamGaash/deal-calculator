@@ -105,7 +105,19 @@ export function runCalculation(data: ScenarioData): CalculationResult {
   const sellingBrokerFee = projectedSalePrice * 0.02;
   const sellingAttorneyFee = projectedSalePrice * 0.005;
   const sellingCosts = sellingBrokerFee + sellingAttorneyFee;
-  const netSaleProceeds = projectedSalePrice - remainingMortgageAtSale - sellingCosts;
+
+  // מס שבח — capital gains tax
+  // Cost basis: purchase price + all purchase costs + all renovations (initial + future)
+  const totalFutureRenovations = renovations.reduce((s, r) => {
+    const months = renovationToMonths(r);
+    return months > 0 ? s + r.estimatedCost : s;
+  }, 0);
+  const shevaghCostBasis = property.price + totalPurchaseCosts + totalInitialRenovations + totalFutureRenovations;
+  const capitalGain = Math.max(0, projectedSalePrice - sellingCosts - shevaghCostBasis);
+  // דירה יחידה (first home) is exempt; additional property pays 25%
+  const capitalGainsTax = property.propertyType === 'additional' ? Math.round(capitalGain * 0.25) : 0;
+
+  const netSaleProceeds = projectedSalePrice - remainingMortgageAtSale - sellingCosts - capitalGainsTax;
   const totalNetProfit = (lastYear?.cumulativeNetCashflow ?? 0) + netSaleProceeds - totalInvestment;
   const roi = totalInvestment > 0 ? (totalNetProfit / totalInvestment) * 100 : 0;
   const equityMultiple = totalInvestment > 0 ? (totalNetProfit + totalInvestment) / totalInvestment : 0;
@@ -164,6 +176,7 @@ export function runCalculation(data: ScenarioData): CalculationResult {
     projectedSalePrice,
     sellingCosts,
     remainingMortgageAtSale,
+    capitalGainsTax,
     netSaleProceeds,
     totalNetProfit,
     roi,

@@ -160,6 +160,7 @@ export interface SummaryMetrics {
   projectedSalePrice: number;
   sellingCosts: number;
   remainingMortgageAtSale: number;
+  capitalGainsTax: number;
   netSaleProceeds: number;
   totalNetProfit: number;
   roi: number;
