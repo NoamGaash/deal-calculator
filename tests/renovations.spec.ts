@@ -11,7 +11,7 @@ test('timing = 0 shows "נכלל בהשקעה הראשונית" badge', async ({
 });
 
 test('timing > 0 does not show initial investment badge', async ({ page }) => {
-  await page.locator('input.w-14').fill('6');
+  await page.getByLabel('תזמון שיפוץ').fill('6');
   await expect(page.getByText('נכלל בהשקעה הראשונית')).not.toBeVisible();
 });
 
@@ -23,6 +23,6 @@ test('adding renovations increments the section badge count', async ({ page }) =
 
 test('removing a renovation entry shows empty state', async ({ page }) => {
   // Remove the entry added in beforeEach
-  await page.locator('input[placeholder="כותרת שיפוץ"]').locator('../..').locator('button.text-gray-500').click();
+  await page.getByLabel('כותרת שיפוץ').locator('../..').locator('button.text-gray-500').click();
   await expect(page.getByText('אין שיפוצים מתוכננים')).toBeVisible();
 });

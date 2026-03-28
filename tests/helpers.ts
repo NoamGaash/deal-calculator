@@ -7,17 +7,15 @@ export async function resetApp(page: Page) {
 
 /**
  * Fill a number input by its associated label text.
- * Works for both InputField and CostInput components.
+ * Works for InputField, CostInput (htmlFor/id), and inline inputs (aria-label).
  */
 export async function fillNumber(page: Page, label: string, value: number | string) {
-  const container = page.locator('label').filter({ hasText: label }).first().locator('..');
-  await container.locator('input[type="number"]').first().fill(String(value));
+  await page.getByLabel(label).first().fill(String(value));
 }
 
 /** Select an option in a <select> by its associated label text */
 export async function selectByLabel(page: Page, label: string, value: string) {
-  const container = page.locator('label').filter({ hasText: label }).first().locator('..');
-  await container.locator('select').first().selectOption(value);
+  await page.getByLabel(label).first().selectOption(value);
 }
 
 /** Locate a summary card in the results panel by its title */

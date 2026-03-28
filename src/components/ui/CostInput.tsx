@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import type { CostValue, CostUnit } from '../../types';
 
 interface Props {
@@ -9,12 +10,13 @@ interface Props {
 }
 
 export function CostInput({ label, value, onChange, tooltip, className = '' }: Props) {
+  const id = useId();
   const setUnit = (unit: CostUnit) => onChange({ ...value, unit });
   const setValue = (v: number) => onChange({ ...value, value: v });
 
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <label className="text-xs font-medium text-gray-400 flex items-center gap-1">
+      <label htmlFor={id} className="text-xs font-medium text-gray-400 flex items-center gap-1">
         {label}
         {tooltip && (
           <span title={tooltip} className="cursor-help text-gray-500 hover:text-gray-300">
@@ -52,6 +54,7 @@ export function CostInput({ label, value, onChange, tooltip, className = '' }: P
           </button>
         </div>
         <input
+          id={id}
           type="number"
           value={value.value}
           onChange={e => setValue(parseFloat(e.target.value) || 0)}

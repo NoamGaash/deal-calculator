@@ -1,3 +1,5 @@
+import { useId } from 'react';
+
 interface Props {
   label: string;
   value: number | string;
@@ -13,9 +15,10 @@ interface Props {
 }
 
 export function InputField({ label, value, onChange, suffix, prefix, min, max, step = 1, tooltip, hint, className = '' }: Props) {
+  const id = useId();
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <label className="text-xs font-medium text-gray-400 flex items-center gap-1">
+      <label htmlFor={id} className="text-xs font-medium text-gray-400 flex items-center gap-1">
         {label}
         {tooltip && (
           <span title={tooltip} className="cursor-help text-gray-500 hover:text-gray-300">
@@ -31,6 +34,7 @@ export function InputField({ label, value, onChange, suffix, prefix, min, max, s
           <span className="px-2 text-gray-400 text-sm border-r border-gray-600 select-none">{prefix}</span>
         )}
         <input
+          id={id}
           type="number"
           value={value}
           onChange={e => onChange(parseFloat(e.target.value) || 0)}

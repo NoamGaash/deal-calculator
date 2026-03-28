@@ -22,8 +22,7 @@ test('save scenario A, create scenario B, switching back to A restores its price
 
   // ── Switch back to A ──
   await page.getByRole('button', { name: 'תרחיש א' }).click();
-  const container = page.locator('label').filter({ hasText: 'מחיר הנכס' }).first().locator('..');
-  await expect(container.locator('input[type="number"]').first()).toHaveValue('1500000');
+  await expect(page.getByLabel('מחיר הנכס').first()).toHaveValue('1500000');
 });
 
 test('changes are auto-saved — no save button needed before switching', async ({ page }) => {
@@ -39,6 +38,5 @@ test('changes are auto-saved — no save button needed before switching', async 
   // Switch away then back — auto-save should have captured the change
   await page.locator('button', { hasText: 'חדש' }).click();
   await page.getByRole('button', { name: 'תרחיש' }).click();
-  const container = page.locator('label').filter({ hasText: 'מחיר הנכס' }).first().locator('..');
-  await expect(container.locator('input[type="number"]').first()).toHaveValue('1200000');
+  await expect(page.getByLabel('מחיר הנכס').first()).toHaveValue('1200000');
 });

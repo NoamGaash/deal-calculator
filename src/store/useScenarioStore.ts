@@ -132,12 +132,14 @@ export const useScenarioStore = create<ScenarioStore>()(
           renovations: data.renovations ?? [],
           purchaseCosts: {
             ...data.purchaseCosts,
-            brokerCommission: (data.purchaseCosts as unknown as { brokerCommissionPct?: number }).brokerCommissionPct !== undefined
-              ? { value: (data.purchaseCosts as unknown as { brokerCommissionPct: number }).brokerCommissionPct, unit: 'pct' as const }
-              : data.purchaseCosts.brokerCommission ?? { value: 0, unit: 'pct' as const },
-            attorney: (data.purchaseCosts as unknown as { attorneyPct?: number }).attorneyPct !== undefined
-              ? { value: (data.purchaseCosts as unknown as { attorneyPct: number }).attorneyPct, unit: 'pct' as const }
-              : data.purchaseCosts.attorney ?? { value: 0, unit: 'pct' as const },
+            brokerCommission: data.purchaseCosts.brokerCommission
+              ?? ((data.purchaseCosts as unknown as { brokerCommissionPct?: number }).brokerCommissionPct !== undefined
+                ? { value: (data.purchaseCosts as unknown as { brokerCommissionPct: number }).brokerCommissionPct, unit: 'pct' as const }
+                : { value: 0, unit: 'pct' as const }),
+            attorney: data.purchaseCosts.attorney
+              ?? ((data.purchaseCosts as unknown as { attorneyPct?: number }).attorneyPct !== undefined
+                ? { value: (data.purchaseCosts as unknown as { attorneyPct: number }).attorneyPct, unit: 'pct' as const }
+                : { value: 0, unit: 'pct' as const }),
           },
         });
         return {

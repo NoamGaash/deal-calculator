@@ -51,6 +51,7 @@ export function RenovationSection({ entries, onChange }: Props) {
               <input
                 value={entry.title}
                 onChange={e => update(entry.id, { title: e.target.value })}
+                aria-label="כותרת שיפוץ"
                 placeholder="כותרת שיפוץ"
                 className="flex-1 bg-gray-600 border border-gray-500 rounded px-2 py-1 text-sm text-white outline-none focus:border-blue-500 transition-colors"
               />
@@ -69,6 +70,7 @@ export function RenovationSection({ entries, onChange }: Props) {
                 type="number"
                 value={entry.estimatedCost}
                 onChange={e => update(entry.id, { estimatedCost: parseFloat(e.target.value) || 0 })}
+                aria-label="עלות מוערכת"
                 placeholder="עלות מוערכת"
                 min={0}
                 step={1000}
@@ -83,6 +85,7 @@ export function RenovationSection({ entries, onChange }: Props) {
                 type="number"
                 value={entry.timingValue}
                 onChange={e => update(entry.id, { timingValue: parseFloat(e.target.value) || 0 })}
+                aria-label="תזמון שיפוץ"
                 min={0}
                 step={1}
                 className="w-14 bg-gray-600 border border-gray-500 rounded px-2 py-1 text-sm text-white outline-none text-center"
