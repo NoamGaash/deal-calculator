@@ -185,11 +185,39 @@ export function runCalculation(data: ScenarioData): CalculationResult {
   const totalCashOutflow = totalInvestment
     + yearlyRows.reduce((s, r) => s + r.totalExpenses, 0)
     + sellingCosts + capitalGainsTax;
-  const MONTHLY_RENT_EXEMPTION = 5_471; // 2024 Israeli rental income exemption threshold
+  const MONTHLY_RENT_EXEMPTION = 5_654; // 2024 Israeli rental income exemption threshold
   const annualEffectiveRent = rental.monthlyRent * (1 - rental.vacancyRatePct / 100) * 12;
-  const annualRentalTax10pct = rental.monthlyRent > MONTHLY_RENT_EXEMPTION
-    ? Math.round(annualEffectiveRent * 0.10)
-    : 0;
+
+  let annualRentalTax10pct: number;
+  let rentalTaxTrack: 'exempt' | '10pct' | 'marginal';
+
+  if (rental.monthlyRent <= MONTHLY_RENT_EXEMPTION) {
+    annualRentalTax10pct = 0;
+    rentalTaxTrack = 'exempt';
+  } else {
+    const flat10Tax = Math.round(annualEffectiveRent * 0.10);
+
+    // Marginal track (48%): deduct mortgage interest, operating expenses, and depreciation
+    // Depreciation: 2% of building value (70% of purchase price is standard building ratio)
+    const annualInterestYear1 = yearlyRows[0]?.interestPaid ?? 0;
+    const annualOpexYear1 = (yearlyRows[0]?.maintenanceCost ?? 0)
+      + (yearlyRows[0]?.managementFee ?? 0)
+      + (yearlyRows[0]?.insuranceCost ?? 0);
+    const annualDepreciation = Math.round(property.price * 0.70 * 0.02);
+    const taxableIncomeMarginal = Math.max(
+      0,
+      annualEffectiveRent - annualInterestYear1 - annualOpexYear1 - annualDepreciation,
+    );
+    const marginalTax = Math.round(taxableIncomeMarginal * 0.48);
+
+    if (marginalTax < flat10Tax) {
+      annualRentalTax10pct = marginalTax;
+      rentalTaxTrack = 'marginal';
+    } else {
+      annualRentalTax10pct = flat10Tax;
+      rentalTaxTrack = '10pct';
+    }
+  }
 
   // ── Break-even year ───────────────────────────────────────────────────────
   let breakEvenYear: number | null = null;
@@ -220,6 +248,7 @@ export function runCalculation(data: ScenarioData): CalculationResult {
     totalInterestPaidHolding,
     totalCashOutflow,
     annualRentalTax10pct,
+    rentalTaxTrack,
     roi,
     irr,
     equityMultiple,

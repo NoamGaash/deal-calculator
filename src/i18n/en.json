@@ -153,10 +153,11 @@
     "totalInterestSub": "During {{years}}-year holding period",
     "totalCashOutflow": "Total Cash Outflow",
     "totalCashOutflowSub": "All money paid over the deal lifetime",
-    "rentalTax": "Rental Tax (10% track)",
+    "rentalTax": "Rental Tax (annual, yr 1)",
     "rentalTaxExempt": "Exempt",
-    "rentalTaxSub": "Annual, year 1",
-    "rentalTaxExemptSub": "Rent below exemption threshold"
+    "rentalTaxSub10": "10% flat track (better than 48%)",
+    "rentalTaxSubMarginal": "48% marginal track (better than 10%)",
+    "rentalTaxExemptSub": "Rent ≤ ₪5,654/mo (2024 threshold)"
   },
   "trancheTable": {
     "title": "Mortgage Tranche Breakdown",

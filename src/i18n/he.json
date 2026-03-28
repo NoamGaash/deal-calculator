@@ -153,10 +153,11 @@
     "totalInterestSub": "בתקופת ההחזקה ({{years}} שנה)",
     "totalCashOutflow": "סה\"כ תזרים יוצא",
     "totalCashOutflowSub": "כל ההוצאות לאורך חיי העסקה",
-    "rentalTax": "מס שכירות (מסלול 10%)",
+    "rentalTax": "מס שכירות (שנתי, שנה 1)",
     "rentalTaxExempt": "פטור",
-    "rentalTaxSub": "שנתי, שנה 1",
-    "rentalTaxExemptSub": "שכ\"ד מתחת לתקרת הפטור"
+    "rentalTaxSub10": "מסלול 10% (עדיף על 48%)",
+    "rentalTaxSubMarginal": "מסלול מדרגות 48% (עדיף על 10%)",
+    "rentalTaxExemptSub": "שכ\"ד ≤ ₪5,654 לחודש (תקרה 2024)"
   },
   "trancheTable": {
     "title": "פירוט מסלולי משכנתא",

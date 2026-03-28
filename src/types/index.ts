@@ -168,7 +168,8 @@ export interface SummaryMetrics {
   totalNetProfit: number;
   totalInterestPaidHolding: number;
   totalCashOutflow: number;
-  annualRentalTax10pct: number;
+  annualRentalTax10pct: number;   // chosen (lower) tax amount regardless of track
+  rentalTaxTrack: 'exempt' | '10pct' | 'marginal';
   roi: number;
   irr: number;
   equityMultiple: number;

@@ -51,7 +51,7 @@ const HE = {
   headerNote: '⚠️ ערכים מסומנים *[קלט]* הוזנו על ידי המשתמש. ערכים מסומנים *[מחושב]* חושבו על ידי המערכת.',
   purchaseTaxNote: '**הנחת מס רכישה:** מחושב לפי מדרגות רשות המיסים 2024. לדירה ראשונה: 0% עד ₪1,978,745 | 3.5% עד ₪2,347,210 | 5% עד ₪6,055,070. לדירה נוספת: 8% עד ₪5,872,725 | 10% מעלה.',
   mortgageNotes: ['פריים = ריבית בנק ישראל + 1.5% (קבועה בחוק)', 'קבועה לא צמודה: שיטת ליר"פ (amortization צרפתי), תשלום חודשי קבוע', 'קבועה צמודה: אמורטיזציה בריבית ריאלית; הקרן צמודה למדד; תשלום נומינלי עולה עם האינפלציה', 'משתנה: תשלום מחושב מחדש בכל N שנים לפי יתרת חוב ושיעור ריבית עדכני'],
-  rentalTaxNote: '**מסלול 10%:** אם שכ"ד חודשי > ₪5,471 (תקרת פטור 2024) — 10% על ההכנסה השנתית הכוללת. מסלולים חלופיים (מדרגות, 60% הכרת הוצאות) לא מחושבים — תלויים בנתוני הנישום.',
+  rentalTaxNote: '**מס שכירות:** אם שכ"ד > ₪5,654/חודש (תקרת פטור 2024) — מחושבים שני מסלולים: (1) 10% על הכנסה ברוטו; (2) 48% על הכנסה נטו לאחר ניכוי ריבית משכנתא + הוצאות תפעול + פחת (2% מ-70% ממחיר הנכס). המסלול הנמוך מוצג.',
   capitalGainsTaxNote: '**מס שבח:** 25% על רווח נומינלי (ללא הצמדה). בסיס עלות = מחיר + עלויות רכישה + כל השיפוצים. דירה יחידה פטורה.',
   sellingCostsNote: '**עלויות מכירה:** 2% עמלת מתווך + 0.5% שכ"ט עו"ד = 2.5% ממחיר המכירה (הנחה קבועה).',
   irrNote: 'IRR: Newton-Raphson על תזרים שנתי; שנה 0 = −השקעה ראשונית; שנה אחרונה כוללת תמורת מכירה.',
@@ -105,7 +105,7 @@ const EN = {
   headerNote: '⚠️ Values marked *[input]* were provided by the user. Values marked *[calculated]* were computed by the system.',
   purchaseTaxNote: '**Purchase tax assumption:** Calculated using 2024 Israeli tax authority brackets. First home: 0% up to ₪1,978,745 | 3.5% up to ₪2,347,210 | 5% up to ₪6,055,070. Additional: 8% up to ₪5,872,725 | 10% above.',
   mortgageNotes: ['Prime = Bank of Israel rate + 1.5% (regulatory)', 'Fixed unlinked: French amortization, constant monthly payment', 'Fixed CPI-linked: real-rate amortization; principal indexed to CPI; nominal payment rises with inflation', 'Variable: payment recalculated every N years based on remaining balance and updated rate'],
-  rentalTaxNote: '**10% flat track:** If monthly rent > ₪5,471 (2024 exemption ceiling) — 10% on full annual income. Alternative tracks (marginal rate, 60% expense recognition) not calculated — depend on individual tax situation.',
+  rentalTaxNote: '**Rental tax:** If rent > ₪5,654/mo (2024 exemption) — both tracks are calculated: (1) 10% on gross income; (2) 48% on net income after deducting mortgage interest + operating expenses + depreciation (2% of 70% of purchase price). The lower result is shown.',
   capitalGainsTaxNote: '**Capital gains tax (מס שבח):** 25% on nominal gain (not inflation-adjusted). Cost basis = purchase price + purchase costs + all renovation costs. First/only home is exempt.',
   sellingCostsNote: '**Selling costs assumption:** 2% broker + 0.5% attorney = 2.5% of sale price (fixed assumption).',
   irrNote: 'IRR: Newton-Raphson on annual cashflows; year 0 = −initial investment; final year includes net sale proceeds.',
@@ -282,11 +282,17 @@ export function generateSummaryMarkdown(
 
   // ── Rental Tax ──
   push(`## ${L.rentalTax}`);
+  const trackLabel = s.rentalTaxTrack === 'exempt'
+    ? L.exempt
+    : s.rentalTaxTrack === '10pct'
+      ? (language === 'he' ? 'מסלול 10% (עדיף)' : '10% flat track (better)')
+      : (language === 'he' ? 'מדרגות 48% (עדיף)' : '48% marginal track (better)');
   push(tbl(
     [L.field, L.value],
     [
       [L.monthlyRentGross, fmtILS(rental.monthlyRent)],
-      [L.exemptionThreshold, '₪5,471 / month (2024)'],
+      [L.exemptionThreshold, '₪5,654 / month (2024)'],
+      [language === 'he' ? 'מסלול' : 'Track chosen', trackLabel],
       [L.annualTax, s.annualRentalTax10pct > 0 ? fmtILS(s.annualRentalTax10pct) : L.exempt],
     ]
   ));
@@ -320,7 +326,7 @@ export function generateSummaryMarkdown(
     ['CPI', `${cpiAssumption}% annual (assumption)`],
     ['IRR', `Newton-Raphson, annual cashflows`],
     [language === 'he' ? 'איזון תפעולי' : 'Break-even', language === 'he' ? 'תזרים מצטבר + הון בנכס ≥ השקעה' : 'cumulative CF + property equity ≥ investment'],
-    [language === 'he' ? 'מס שכירות' : 'Rental tax', `10% track, threshold ₪5,471/mo (2024)`],
+    [language === 'he' ? 'מס שכירות' : 'Rental tax', language === 'he' ? 'min(10% ברוטו, 48% נטו), תקרת פטור ₪5,654/חודש' : 'min(10% gross, 48% net after deductions), threshold ₪5,654/mo (2024)'],
   ];
   push(tbl([language === 'he' ? 'נושא' : 'Topic', language === 'he' ? 'הנחה / שיטה' : 'Assumption / Method'], rows));
 

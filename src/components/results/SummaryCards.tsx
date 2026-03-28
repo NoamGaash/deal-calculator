@@ -96,9 +96,13 @@ export function SummaryCards({ summary: s, holdingYears }: Props) {
         />
         <Card
           label={t('summary.rentalTax')}
-          value={s.annualRentalTax10pct > 0 ? fmtILS(s.annualRentalTax10pct) : t('summary.rentalTaxExempt')}
-          sub={s.annualRentalTax10pct > 0 ? t('summary.rentalTaxSub') : t('summary.rentalTaxExemptSub')}
-          color={s.annualRentalTax10pct > 0 ? 'yellow' : 'green'}
+          value={s.rentalTaxTrack === 'exempt' ? t('summary.rentalTaxExempt') : fmtILS(s.annualRentalTax10pct)}
+          sub={
+            s.rentalTaxTrack === 'exempt' ? t('summary.rentalTaxExemptSub') :
+            s.rentalTaxTrack === '10pct' ? t('summary.rentalTaxSub10') :
+            t('summary.rentalTaxSubMarginal')
+          }
+          color={s.rentalTaxTrack === 'exempt' ? 'green' : 'yellow'}
         />
       </div>
 
