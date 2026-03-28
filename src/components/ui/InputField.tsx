@@ -8,10 +8,11 @@ interface Props {
   max?: number;
   step?: number;
   tooltip?: string;
+  hint?: string;
   className?: string;
 }
 
-export function InputField({ label, value, onChange, suffix, prefix, min, max, step = 1, tooltip, className = '' }: Props) {
+export function InputField({ label, value, onChange, suffix, prefix, min, max, step = 1, tooltip, hint, className = '' }: Props) {
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
       <label className="text-xs font-medium text-gray-400 flex items-center gap-1">
@@ -42,6 +43,7 @@ export function InputField({ label, value, onChange, suffix, prefix, min, max, s
           <span className="px-2 text-gray-400 text-sm border-l border-gray-600 select-none whitespace-nowrap">{suffix}</span>
         )}
       </div>
+      {hint && <span className="text-xs text-blue-400">{hint}</span>}
     </div>
   );
 }

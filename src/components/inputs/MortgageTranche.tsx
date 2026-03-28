@@ -29,9 +29,13 @@ export function MortgancheTranche({ tranche: t, index, onChange, onRemove, canRe
   const isPrimeOrVariable = t.type === 'prime' || t.type === 'variable';
 
   const rateLabel =
-    t.type === 'prime' ? 'מרווח מעל פריים (ספרד)' :
-    t.type === 'variable' ? 'מרווח מעל בנק ישראל' :
+    t.type === 'prime' ? 'מרווח מפריים' :
+    t.type === 'variable' ? 'מרווח מבסיס' :
     'ריבית שנתית';
+
+  const spreadHint = isPrimeOrVariable
+    ? `P${t.interestRate >= 0 ? '+' : ''}${t.interestRate}%`
+    : undefined;
 
   return (
     <div className="border border-gray-600 rounded-lg overflow-hidden">
@@ -82,7 +86,8 @@ export function MortgancheTranche({ tranche: t, index, onChange, onRemove, canRe
               value={t.interestRate}
               onChange={v => update('interestRate', v)}
               suffix="%"
-              min={0} max={20} step={0.1}
+              min={isPrimeOrVariable ? -5 : 0} max={20} step={0.1}
+              hint={spreadHint}
             />
             <InputField
               label="תקופה"
