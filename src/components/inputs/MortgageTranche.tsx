@@ -91,6 +91,7 @@ export function MortgancheTranche({ tranche: t, index, onChange, onRemove, canRe
               onChange={v => update('interestRate', v)}
               suffix="%"
               min={isPrimeOrVariable ? -5 : 0} max={20} step={0.1}
+              stepper
               hint={spreadHint}
             />
             <InputField
@@ -116,6 +117,7 @@ export function MortgancheTranche({ tranche: t, index, onChange, onRemove, canRe
                 onChange={v => update('assumedAnnualCpiPct', v)}
                 suffix="%"
                 min={0} max={10} step={0.25}
+                stepper
               />
             )}
           </div>
