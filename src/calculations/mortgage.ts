@@ -73,7 +73,7 @@ function amortizeFixedCPI(t: MortgageTranche): TrancheSchedule {
   return summarize(t.id, rows);
 }
 
-// פריים — BoI rate + spread; recalculates payment each month as rate may change
+// פריים — Prime = BoI + 1.5%; effective rate = Prime + spread
 function amortizePrime(t: MortgageTranche): TrancheSchedule {
   let balance = t.amount;
   const rows: AmortizationRow[] = [];
@@ -81,7 +81,8 @@ function amortizePrime(t: MortgageTranche): TrancheSchedule {
   for (let m = 1; m <= t.durationMonths; m++) {
     const year = Math.ceil(m / 12);
     const boiRate = getBoIRate(t.boiRatePeriods, year);
-    const effectiveAnnualRate = boiRate + t.interestRate; // spread stored in interestRate
+    const primeRate = boiRate + 1.5;
+    const effectiveAnnualRate = primeRate + t.interestRate; // spread stored in interestRate
     const monthlyRate = effectiveAnnualRate / 100 / 12;
     const remaining = t.durationMonths - m + 1;
     const payment = pmt(monthlyRate, remaining, balance);
