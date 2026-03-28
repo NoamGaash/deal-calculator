@@ -1,5 +1,19 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useScenarioStore } from '../../store/useScenarioStore';
+
+const STORAGE_KEY = 'deal-calculator-scenarios';
+
+function handleExport() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  const blob = new Blob([JSON.stringify(JSON.parse(raw), null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `deal-calculator-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 export function ScenarioPanel() {
   const { scenarios, activeId, saveScenario, loadScenario, duplicateScenario, deleteScenario, renameScenario, newScenario } = useScenarioStore();
@@ -8,7 +22,25 @@ export function ScenarioPanel() {
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameVal, setRenameVal] = useState('');
 
+  const importRef = useRef<HTMLInputElement>(null);
   const activeScenario = scenarios.find(s => s.id === activeId);
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const parsed = JSON.parse(ev.target?.result as string);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        window.location.reload();
+      } catch {
+        alert('קובץ לא תקין');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
 
   const handleSaveAs = () => {
     const name = saveName.trim() || activeScenario?.name;
@@ -27,7 +59,26 @@ export function ScenarioPanel() {
   return (
     <div className="flex flex-col h-full">
       <div className="px-3 py-3 border-b border-gray-700">
-        <p className="text-xs font-semibold text-gray-300 uppercase tracking-wide mb-2">תרחישים</p>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-semibold text-gray-300 uppercase tracking-wide">תרחישים</p>
+          <div className="flex gap-1">
+            <button
+              onClick={handleExport}
+              title="ייצא ל-JSON"
+              className="text-[10px] px-1.5 py-0.5 text-gray-400 hover:text-gray-200 hover:bg-gray-700 rounded transition-colors"
+            >
+              ↓ יצוא
+            </button>
+            <button
+              onClick={() => importRef.current?.click()}
+              title="ייבא מ-JSON"
+              className="text-[10px] px-1.5 py-0.5 text-gray-400 hover:text-gray-200 hover:bg-gray-700 rounded transition-colors"
+            >
+              ↑ יבוא
+            </button>
+            <input ref={importRef} type="file" accept=".json,application/json" className="hidden" onChange={handleImport} />
+          </div>
+        </div>
 
         {/* Active scenario indicator */}
         {activeScenario ? (
