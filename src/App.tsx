@@ -38,7 +38,7 @@ export default function App() {
       </aside>
 
       {/* Inputs panel */}
-      <main className="w-80 flex-shrink-0 border-l border-gray-700 overflow-y-auto min-h-0 flex flex-col gap-3 p-3">
+      <main className="w-80 flex-shrink-0 border-l border-gray-700 overflow-y-auto min-h-0 space-y-3 p-3">
         <PropertySection
           data={current.property}
           onChange={v => update('property', v)}

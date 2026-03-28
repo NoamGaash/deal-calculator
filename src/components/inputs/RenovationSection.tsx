@@ -62,22 +62,22 @@ export function RenovationSection({ entries, onChange }: Props) {
               </button>
             </div>
 
-            <div className="flex items-center gap-2">
-              {/* Cost */}
-              <div className="flex items-center bg-gray-600 border border-gray-500 rounded overflow-hidden flex-1">
-                <span className="px-2 text-gray-400 text-xs border-l border-gray-500 select-none">₪</span>
-                <input
-                  type="number"
-                  value={entry.estimatedCost}
-                  onChange={e => update(entry.id, { estimatedCost: parseFloat(e.target.value) || 0 })}
-                  placeholder="עלות מוערכת"
-                  min={0}
-                  step={1000}
-                  className="flex-1 bg-transparent px-2 py-1 text-sm text-white outline-none min-w-0"
-                />
-              </div>
+            {/* Cost — full width */}
+            <div className="flex items-center bg-gray-600 border border-gray-500 rounded overflow-hidden">
+              <span className="px-2 text-gray-400 text-xs border-l border-gray-500 select-none">₪</span>
+              <input
+                type="number"
+                value={entry.estimatedCost}
+                onChange={e => update(entry.id, { estimatedCost: parseFloat(e.target.value) || 0 })}
+                placeholder="עלות מוערכת"
+                min={0}
+                step={1000}
+                className="flex-1 bg-transparent px-2 py-1 text-sm text-white outline-none min-w-0"
+              />
+            </div>
 
-              {/* Timing */}
+            {/* Timing */}
+            <div className="flex items-center gap-2">
               <span className="text-xs text-gray-400 flex-shrink-0">לאחר</span>
               <input
                 type="number"
