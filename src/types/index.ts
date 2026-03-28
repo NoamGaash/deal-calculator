@@ -163,6 +163,9 @@ export interface SummaryMetrics {
   capitalGainsTax: number;
   netSaleProceeds: number;
   totalNetProfit: number;
+  totalInterestPaidHolding: number;
+  totalCashOutflow: number;
+  annualRentalTax10pct: number;
   roi: number;
   irr: number;
   equityMultiple: number;

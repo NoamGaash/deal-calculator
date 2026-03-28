@@ -81,6 +81,27 @@ export function SummaryCards({ summary: s, holdingYears }: Props) {
         />
       </div>
 
+      {/* Mortgage + tax row */}
+      <div className="grid grid-cols-3 gap-2">
+        <Card
+          label={t('summary.totalInterest')}
+          value={fmtILSShort(s.totalInterestPaidHolding)}
+          sub={t('summary.totalInterestSub', { years: holdingYears })}
+          color="yellow"
+        />
+        <Card
+          label={t('summary.totalCashOutflow')}
+          value={fmtILSShort(s.totalCashOutflow)}
+          sub={t('summary.totalCashOutflowSub')}
+        />
+        <Card
+          label={t('summary.rentalTax')}
+          value={s.annualRentalTax10pct > 0 ? fmtILS(s.annualRentalTax10pct) : t('summary.rentalTaxExempt')}
+          sub={s.annualRentalTax10pct > 0 ? t('summary.rentalTaxSub') : t('summary.rentalTaxExemptSub')}
+          color={s.annualRentalTax10pct > 0 ? 'yellow' : 'green'}
+        />
+      </div>
+
       {/* Bottom row — returns */}
       <div className="grid grid-cols-5 gap-2">
         <Card

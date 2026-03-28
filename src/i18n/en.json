@@ -137,7 +137,24 @@
     "irrSub": "Internal rate of return",
     "equityMultiple": "Equity Multiple",
     "breakEven": "Break-even year {{year}}",
-    "noBreakEven": "No break-even reached"
+    "noBreakEven": "No break-even reached",
+    "totalInterest": "Total Interest Paid",
+    "totalInterestSub": "During {{years}}-year holding period",
+    "totalCashOutflow": "Total Cash Outflow",
+    "totalCashOutflowSub": "All money paid over the deal lifetime",
+    "rentalTax": "Rental Tax (10% track)",
+    "rentalTaxExempt": "Exempt",
+    "rentalTaxSub": "Annual, year 1",
+    "rentalTaxExemptSub": "Rent below exemption threshold"
+  },
+  "trancheTable": {
+    "title": "Mortgage Tranche Breakdown",
+    "label": "Tranche",
+    "type": "Type",
+    "amount": "Amount",
+    "monthlyPayment": "Monthly Payment (Yr 1)",
+    "interestHolding": "Interest (holding period)",
+    "totalPaidHolding": "Total Paid (holding period)"
   },
   "table": {
     "title": "Yearly Detail",

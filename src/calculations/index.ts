@@ -153,6 +153,17 @@ export function runCalculation(data: ScenarioData): CalculationResult {
   irrCashflows.push((yearlyRows[yearlyRows.length - 1]?.netCashflow ?? 0) + netSaleProceeds);
   const irr = calcAnnualIRR(irrCashflows);
 
+  // ── Additional summary metrics ───────────────────────────────────────────
+  const totalInterestPaidHolding = yearlyRows.reduce((s, r) => s + r.interestPaid, 0);
+  const totalCashOutflow = totalInvestment
+    + yearlyRows.reduce((s, r) => s + r.totalExpenses, 0)
+    + sellingCosts + capitalGainsTax;
+  const MONTHLY_RENT_EXEMPTION = 5_471; // 2024 Israeli rental income exemption threshold
+  const annualEffectiveRent = rental.monthlyRent * (1 - rental.vacancyRatePct / 100) * 12;
+  const annualRentalTax10pct = rental.monthlyRent > MONTHLY_RENT_EXEMPTION
+    ? Math.round(annualEffectiveRent * 0.10)
+    : 0;
+
   // ── Break-even year ───────────────────────────────────────────────────────
   let breakEvenYear: number | null = null;
   for (const row of yearlyRows) {
@@ -179,6 +190,9 @@ export function runCalculation(data: ScenarioData): CalculationResult {
     capitalGainsTax,
     netSaleProceeds,
     totalNetProfit,
+    totalInterestPaidHolding,
+    totalCashOutflow,
+    annualRentalTax10pct,
     roi,
     irr,
     equityMultiple,

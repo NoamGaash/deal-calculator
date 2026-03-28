@@ -6,6 +6,7 @@ import { CashflowChart } from './charts/CashflowChart';
 import { MortgageBalanceChart } from './charts/MortgageBalanceChart';
 import { EquityChart } from './charts/EquityChart';
 import { YearlyTable } from './YearlyTable';
+import { TrancheSummaryTable } from './TrancheSummaryTable';
 
 type Tab = 'summary' | 'charts' | 'table';
 
@@ -47,7 +48,14 @@ export function ResultsPanel({ result, tranches, holdingYears }: Props) {
       {/* Content */}
       <div className="flex-1 overflow-y-auto flex flex-col gap-4">
         {tab === 'summary' && (
-          <SummaryCards summary={result.summary} holdingYears={holdingYears} />
+          <>
+            <SummaryCards summary={result.summary} holdingYears={holdingYears} />
+            <TrancheSummaryTable
+              trancheSchedules={result.trancheSchedules}
+              tranches={tranches}
+              holdingMonths={holdingYears * 12}
+            />
+          </>
         )}
         {tab === 'charts' && (
           <>

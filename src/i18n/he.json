@@ -137,7 +137,24 @@
     "irrSub": "תשואה פנימית",
     "equityMultiple": "מכפיל הון",
     "breakEven": "שיבר-אבן שנה {{year}}",
-    "noBreakEven": "לא מגיע לשיבר-אבן"
+    "noBreakEven": "לא מגיע לשיבר-אבן",
+    "totalInterest": "ריבית כוללת",
+    "totalInterestSub": "בתקופת ההחזקה ({{years}} שנה)",
+    "totalCashOutflow": "סה\"כ תזרים יוצא",
+    "totalCashOutflowSub": "כל ההוצאות לאורך חיי העסקה",
+    "rentalTax": "מס שכירות (מסלול 10%)",
+    "rentalTaxExempt": "פטור",
+    "rentalTaxSub": "שנתי, שנה 1",
+    "rentalTaxExemptSub": "שכ\"ד מתחת לתקרת הפטור"
+  },
+  "trancheTable": {
+    "title": "פירוט מסלולי משכנתא",
+    "label": "מסלול",
+    "type": "סוג",
+    "amount": "סכום",
+    "monthlyPayment": "תשלום חודשי (שנה 1)",
+    "interestHolding": "ריבית (תקופת החזקה)",
+    "totalPaidHolding": "סה\"כ שולם (תקופת החזקה)"
   },
   "table": {
     "title": "פירוט שנתי",
