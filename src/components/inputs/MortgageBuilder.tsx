@@ -15,6 +15,7 @@ export function MortgageBuilder({ tranches, propertyPrice, equity, onChange }: P
   const totalMortgage = tranches.reduce((s, t) => s + t.amount, 0);
   const maxMortgage = propertyPrice - equity;
   const overLimit = totalMortgage > maxMortgage * 1.01;
+  const underLimit = maxMortgage > 0 && totalMortgage < maxMortgage * 0.99;
 
   const addTranche = () => {
     const remaining = Math.max(0, maxMortgage - totalMortgage);
@@ -43,6 +44,11 @@ export function MortgageBuilder({ tranches, propertyPrice, equity, onChange }: P
         {overLimit && (
           <div className="text-xs text-red-400 bg-red-900/20 border border-red-800 rounded px-2 py-1">
             סה"כ המשכנתא ({fmtILS(totalMortgage)}) חורג מהמימון הנדרש ({fmtILS(maxMortgage)})
+          </div>
+        )}
+        {underLimit && !overLimit && (
+          <div className="text-xs text-yellow-400 bg-yellow-900/20 border border-yellow-800 rounded px-2 py-1">
+            סה"כ המשכנתא ({fmtILS(totalMortgage)}) נמוך מהמימון הנדרש ({fmtILS(maxMortgage)})
           </div>
         )}
 
