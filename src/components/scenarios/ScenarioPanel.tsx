@@ -11,8 +11,14 @@ export function ScenarioPanel() {
   const activeScenario = scenarios.find(s => s.id === activeId);
 
   const handleSave = () => {
-    if (!saveName.trim()) return;
-    saveScenario(saveName.trim());
+    if (activeScenario && !showSave) {
+      // Existing scenario — save immediately with current name
+      saveScenario(activeScenario.name);
+      return;
+    }
+    const name = saveName.trim() || activeScenario?.name;
+    if (!name) return;
+    saveScenario(name);
     setSaveName('');
     setShowSave(false);
   };
@@ -38,10 +44,10 @@ export function ScenarioPanel() {
         {/* Save / New buttons */}
         <div className="flex gap-1.5 mt-2">
           <button
-            onClick={() => setShowSave(v => !v)}
+            onClick={handleSave}
             className="flex-1 text-xs py-1 bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors"
           >
-            שמור
+            {activeScenario ? 'שמור' : 'שמור...'}
           </button>
           <button
             onClick={newScenario}
@@ -51,7 +57,17 @@ export function ScenarioPanel() {
           </button>
         </div>
 
-        {showSave && (
+        {/* Save-as: show when no active scenario, or when explicitly requested */}
+        {activeScenario && (
+          <button
+            onClick={() => { setSaveName(activeScenario.name); setShowSave(v => !v); }}
+            className="mt-1 w-full text-xs py-0.5 text-gray-500 hover:text-gray-300 transition-colors text-right"
+          >
+            שמור בשם...
+          </button>
+        )}
+
+        {(!activeScenario || showSave) && (
           <div className="mt-2 flex gap-1">
             <input
               value={saveName}
