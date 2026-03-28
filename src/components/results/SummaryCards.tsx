@@ -41,7 +41,7 @@ export function SummaryCards({ summary: s, holdingYears }: Props) {
         <Card
           label="השקעה כוללת"
           value={fmtILSShort(s.totalInvestment)}
-          sub={`הון + עלויות רכישה`}
+          sub={s.totalInitialRenovations > 0 ? `הון + עלויות + שיפוצים ראשוניים` : `הון + עלויות רכישה`}
           color="blue"
         />
         <Card

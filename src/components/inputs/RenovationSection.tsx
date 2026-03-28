@@ -1,5 +1,6 @@
 import { SectionCard } from '../ui/SectionCard';
 import type { RenovationEntry, TimingUnit } from '../../types';
+import { renovationToMonths } from '../../types';
 import { fmtILS } from '../../utils/formatters';
 
 interface Props {
@@ -42,8 +43,10 @@ export function RenovationSection({ entries, onChange }: Props) {
           <p className="text-xs text-gray-500 text-center py-2">אין שיפוצים מתוכננים</p>
         )}
 
-        {entries.map((entry) => (
-          <div key={entry.id} className="flex flex-col gap-2 bg-gray-700 border border-gray-600 rounded-lg p-2.5">
+        {entries.map((entry) => {
+          const isInitial = renovationToMonths(entry) <= 0;
+          return (
+          <div key={entry.id} className={`flex flex-col gap-2 border rounded-lg p-2.5 ${isInitial ? 'bg-blue-900/20 border-blue-800' : 'bg-gray-700 border-gray-600'}`}>
             <div className="flex items-center gap-2">
               <input
                 value={entry.title}
@@ -94,8 +97,12 @@ export function RenovationSection({ entries, onChange }: Props) {
                 ))}
               </select>
             </div>
+            {isInitial && (
+              <span className="text-xs text-blue-400">נכלל בהשקעה הראשונית</span>
+            )}
           </div>
-        ))}
+          );
+        })}
 
         <button
           onClick={add}

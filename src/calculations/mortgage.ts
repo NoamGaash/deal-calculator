@@ -39,7 +39,7 @@ function amortizeFixedCPI(t: MortgageTranche): TrancheSchedule {
   const monthlyInflation = Math.pow(1 + t.assumedAnnualCpiPct / 100, 1 / 12) - 1;
   const n = t.durationMonths;
 
-  // Initial payment based on real rate
+  // Payment is fixed in real terms; grows nominally with inflation each month
   const basePayment = pmt(realMonthlyRate, n, t.amount);
 
   let realBalance = t.amount;
@@ -47,22 +47,26 @@ function amortizeFixedCPI(t: MortgageTranche): TrancheSchedule {
   const rows: AmortizationRow[] = [];
 
   for (let m = 1; m <= n; m++) {
-    // Apply monthly linkage to balance
+    const prevInflationFactor = inflationFactor;
     inflationFactor *= 1 + monthlyInflation;
-    const nominalPayment = basePayment * inflationFactor;
-    const linkageAddition = realBalance * (inflationFactor - (inflationFactor / (1 + monthlyInflation)));
-    const interest = realBalance * realMonthlyRate * inflationFactor;
-    const principal = nominalPayment - interest - linkageAddition * inflationFactor;
 
-    // Update real balance
-    realBalance -= (nominalPayment - interest - linkageAddition) / inflationFactor;
-    realBalance = Math.max(0, realBalance);
+    const prevNominalBalance = realBalance * prevInflationFactor;
+    const nominalPayment = basePayment * inflationFactor;
+
+    // Linkage: inflation added to the outstanding balance this month
+    const linkage = prevNominalBalance * monthlyInflation;
+    // Interest on the inflation-adjusted (current) nominal balance at the real rate
+    const interest = prevNominalBalance * (1 + monthlyInflation) * realMonthlyRate;
+    const principal = nominalPayment - interest - linkage;
+
+    // Real balance amortizes purely at the real rate (standard amortization in real terms)
+    realBalance = Math.max(0, realBalance * (1 + realMonthlyRate) - basePayment);
 
     rows.push({
       month: m,
       payment: nominalPayment,
-      principal: principal,
-      interest: interest + linkageAddition,
+      principal,
+      interest: interest + linkage,  // linkage reported as part of financing cost
       balance: realBalance * inflationFactor,
     });
   }
@@ -89,34 +93,29 @@ function amortizePrime(t: MortgageTranche): TrancheSchedule {
   return summarize(t.id, rows);
 }
 
-// משתנה — rate resets every N years (recalcs payment at each reset)
+// משתנה — rate resets every N years (payment is fixed between resets)
 function amortizeVariable(t: MortgageTranche): TrancheSchedule {
   let balance = t.amount;
   const rows: AmortizationRow[] = [];
   const resetEvery = t.rateChangeEveryYears * 12;
+  let currentMonthlyRate = 0;
+  let currentPayment = 0;
 
   for (let m = 1; m <= t.durationMonths; m++) {
-    const year = Math.ceil(m / 12);
-    // At each reset boundary (or month 1), recalc payment for remaining term
+    // Recalculate payment only at reset boundaries
     const isReset = m === 1 || (m - 1) % resetEvery === 0;
-    const boiRate = getBoIRate(t.boiRatePeriods, year);
-    const effectiveAnnualRate = boiRate + t.interestRate;
-    const monthlyRate = effectiveAnnualRate / 100 / 12;
-
-    let payment: number;
     if (isReset) {
+      const year = Math.ceil(m / 12);
+      const boiRate = getBoIRate(t.boiRatePeriods, year);
+      currentMonthlyRate = (boiRate + t.interestRate) / 100 / 12;
       const remaining = t.durationMonths - m + 1;
-      payment = pmt(monthlyRate, remaining, balance);
-    } else {
-      // Use the same rate as last month (payment already computed, recalc cleanly)
-      const remaining = t.durationMonths - m + 1;
-      payment = pmt(monthlyRate, remaining, balance);
+      currentPayment = pmt(currentMonthlyRate, remaining, balance);
     }
 
-    const interest = balance * monthlyRate;
-    const principal = payment - interest;
+    const interest = balance * currentMonthlyRate;
+    const principal = currentPayment - interest;
     balance = Math.max(0, balance - principal);
-    rows.push({ month: m, payment, principal, interest, balance });
+    rows.push({ month: m, payment: currentPayment, principal, interest, balance });
   }
   return summarize(t.id, rows);
 }
