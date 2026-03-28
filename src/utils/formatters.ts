@@ -1,3 +1,5 @@
+import i18n from '../i18n';
+
 const ILS = new Intl.NumberFormat('he-IL', {
   style: 'currency',
   currency: 'ILS',
@@ -34,8 +36,8 @@ export function fmtNum(value: number, decimals = 0): string {
 export function fmtMonths(months: number): string {
   const y = Math.floor(months / 12);
   const m = months % 12;
-  if (m === 0) return `${y} שנים`;
-  return `${y} שנים ו-${m} חודשים`;
+  if (m === 0) return `${y} ${i18n.t('formatters.years')}`;
+  return `${y} ${i18n.t('formatters.yearsAnd')}${m} ${i18n.t('formatters.months')}`;
 }
 
 export function fmtX(value: number): string {

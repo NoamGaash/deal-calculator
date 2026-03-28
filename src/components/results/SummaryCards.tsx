@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { SummaryMetrics } from '../../types';
 import { fmtILS, fmtILSShort, fmtPct, fmtX } from '../../utils/formatters';
 
@@ -31,6 +32,7 @@ interface Props {
 }
 
 export function SummaryCards({ summary: s, holdingYears }: Props) {
+  const { t } = useTranslation();
   const irrColor = isNaN(s.irr) ? 'default' : s.irr > 0.08 ? 'green' : s.irr > 0.04 ? 'yellow' : 'red';
   const cashflowColor = s.initialMonthlyCashflow >= 0 ? 'green' : 'red';
 
@@ -39,42 +41,42 @@ export function SummaryCards({ summary: s, holdingYears }: Props) {
       {/* Top row — investment summary */}
       <div className="grid grid-cols-3 gap-2">
         <Card
-          label="השקעה כוללת"
+          label={t('summary.totalInvestment')}
           value={fmtILSShort(s.totalInvestment)}
-          sub={s.totalInitialRenovations > 0 ? `הון + עלויות + שיפוצים ראשוניים` : `הון + עלויות רכישה`}
+          sub={s.totalInitialRenovations > 0 ? t('summary.totalInvestmentSubReno') : t('summary.totalInvestmentSub')}
           color="blue"
         />
         <Card
-          label="מס רכישה"
+          label={t('summary.purchaseTax')}
           value={fmtILS(s.purchaseTax)}
-          sub={`מתוך ${fmtILSShort(s.totalPurchaseCosts)} עלויות`}
+          sub={t('summary.purchaseTaxSub', { total: fmtILSShort(s.totalPurchaseCosts) })}
           color="yellow"
         />
         <Card
-          label="LTV"
+          label={t('summary.ltv')}
           value={fmtPct(s.ltvPct)}
-          sub={`משכנתא ${fmtILSShort(s.totalMortgage)}`}
+          sub={t('summary.ltvSub', { amount: fmtILSShort(s.totalMortgage) })}
         />
       </div>
 
       {/* Middle row — cash flow */}
       <div className="grid grid-cols-3 gap-2">
         <Card
-          label="תשלום חודשי (שנה 1)"
+          label={t('summary.monthlyPayment')}
           value={fmtILS(s.monthlyMortgagePayment)}
-          sub="משכנתא בלבד"
+          sub={t('summary.monthlyPaymentSub')}
           color="yellow"
         />
         <Card
-          label="תזרים חודשי נטו"
+          label={t('summary.monthlyCashflow')}
           value={fmtILS(s.initialMonthlyCashflow)}
-          sub="שכירות פחות הכל"
+          sub={t('summary.monthlyCashflowSub')}
           color={cashflowColor}
         />
         <Card
-          label="תשואה ברוטו"
+          label={t('summary.grossYield')}
           value={fmtPct(s.grossYield)}
-          sub={`Cap Rate ${fmtPct(s.capRate)}`}
+          sub={t('summary.grossYieldSub', { rate: fmtPct(s.capRate) })}
           color="default"
         />
       </div>
@@ -82,33 +84,33 @@ export function SummaryCards({ summary: s, holdingYears }: Props) {
       {/* Bottom row — returns */}
       <div className="grid grid-cols-5 gap-2">
         <Card
-          label={`רווח נטו (${holdingYears} שנה)`}
+          label={t('summary.netProfit', { years: holdingYears })}
           value={fmtILSShort(s.totalNetProfit)}
-          sub={`מכירה ב-${fmtILSShort(s.projectedSalePrice)}`}
+          sub={t('summary.netProfitSub', { price: fmtILSShort(s.projectedSalePrice) })}
           color={s.totalNetProfit >= 0 ? 'green' : 'red'}
         />
         <Card
-          label="מס שבח"
-          value={s.capitalGainsTax > 0 ? fmtILSShort(s.capitalGainsTax) : 'פטור'}
-          sub={s.capitalGainsTax > 0 ? 'דירה נוספת — 25%' : 'דירה יחידה'}
+          label={t('summary.capitalGainsTax')}
+          value={s.capitalGainsTax > 0 ? fmtILSShort(s.capitalGainsTax) : t('summary.capitalGainsTaxExempt')}
+          sub={s.capitalGainsTax > 0 ? t('summary.capitalGainsTaxSubAdditional') : t('summary.capitalGainsTaxSubFirst')}
           color={s.capitalGainsTax > 0 ? 'red' : 'green'}
         />
         <Card
-          label="ROI"
+          label={t('summary.roi')}
           value={fmtPct(s.roi)}
-          sub={`על ההון שהושקע`}
+          sub={t('summary.roiSub')}
           color={s.roi >= 0 ? 'green' : 'red'}
         />
         <Card
-          label="IRR (שנתי)"
+          label={t('summary.irr')}
           value={isNaN(s.irr) ? '—' : fmtPct(s.irr * 100)}
-          sub="תשואה פנימית"
+          sub={t('summary.irrSub')}
           color={irrColor}
         />
         <Card
-          label="מכפיל הון"
+          label={t('summary.equityMultiple')}
           value={fmtX(s.equityMultiple)}
-          sub={s.breakEvenYear ? `שיבר-אבן שנה ${s.breakEvenYear}` : 'לא מגיע לשיבר-אבן'}
+          sub={s.breakEvenYear ? t('summary.breakEven', { year: s.breakEvenYear }) : t('summary.noBreakEven')}
           color={s.equityMultiple >= 1.5 ? 'green' : 'default'}
         />
       </div>

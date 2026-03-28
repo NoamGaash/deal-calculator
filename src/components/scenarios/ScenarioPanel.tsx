@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScenarioStore } from '../../store/useScenarioStore';
 
 const STORAGE_KEY = 'deal-calculator-scenarios';
@@ -16,6 +17,7 @@ function handleExport() {
 }
 
 export function ScenarioPanel() {
+  const { t, i18n } = useTranslation();
   const { scenarios, activeId, saveScenario, loadScenario, duplicateScenario, deleteScenario, renameScenario, newScenario } = useScenarioStore();
   const [saveName, setSaveName] = useState('');
   const [showSave, setShowSave] = useState(false);
@@ -35,7 +37,7 @@ export function ScenarioPanel() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
         window.location.reload();
       } catch {
-        alert('קובץ לא תקין');
+        alert(t('scenarios.invalidFile'));
       }
     };
     reader.readAsText(file);
@@ -56,25 +58,27 @@ export function ScenarioPanel() {
     setRenamingId(null);
   };
 
+  const locale = i18n.language === 'he' ? 'he-IL' : 'en-US';
+
   return (
     <div className="flex flex-col h-full">
       <div className="px-3 py-3 border-b border-gray-700">
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-semibold text-gray-300 uppercase tracking-wide">תרחישים</p>
+          <p className="text-xs font-semibold text-gray-300 uppercase tracking-wide">{t('scenarios.title')}</p>
           <div className="flex gap-1">
             <button
               onClick={handleExport}
-              title="ייצא ל-JSON"
+              title={t('scenarios.exportTitle')}
               className="text-[10px] px-1.5 py-0.5 text-gray-400 hover:text-gray-200 hover:bg-gray-700 rounded transition-colors"
             >
-              ↓ יצוא
+              {t('scenarios.export')}
             </button>
             <button
               onClick={() => importRef.current?.click()}
-              title="ייבא מ-JSON"
+              title={t('scenarios.importTitle')}
               className="text-[10px] px-1.5 py-0.5 text-gray-400 hover:text-gray-200 hover:bg-gray-700 rounded transition-colors"
             >
-              ↑ יבוא
+              {t('scenarios.import')}
             </button>
             <input ref={importRef} type="file" accept=".json,application/json" className="hidden" onChange={handleImport} />
           </div>
@@ -84,10 +88,10 @@ export function ScenarioPanel() {
         {activeScenario ? (
           <div className="flex items-center justify-between">
             <div className="text-xs text-blue-400 truncate">{activeScenario.name}</div>
-            <div className="text-[10px] text-gray-500">נשמר אוטומטית</div>
+            <div className="text-[10px] text-gray-500">{t('scenarios.autoSaved')}</div>
           </div>
         ) : (
-          <div className="text-xs text-gray-500">לא שמור</div>
+          <div className="text-xs text-gray-500">{t('scenarios.unsaved')}</div>
         )}
 
         {/* Buttons */}
@@ -97,7 +101,7 @@ export function ScenarioPanel() {
               onClick={() => setShowSave(true)}
               className="flex-1 text-xs py-1 bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors"
             >
-              שמור...
+              {t('scenarios.save')}
             </button>
           )}
           {activeScenario && (
@@ -105,14 +109,14 @@ export function ScenarioPanel() {
               onClick={() => { setSaveName(activeScenario.name); setShowSave(v => !v); }}
               className="flex-1 text-xs py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors"
             >
-              שמור בשם...
+              {t('scenarios.saveAs')}
             </button>
           )}
           <button
             onClick={newScenario}
             className="flex-1 text-xs py-1 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded transition-colors"
           >
-            חדש
+            {t('scenarios.new')}
           </button>
         </div>
 
@@ -122,7 +126,7 @@ export function ScenarioPanel() {
               value={saveName}
               onChange={e => setSaveName(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSaveAs()}
-              placeholder={activeScenario?.name ?? 'שם התרחיש'}
+              placeholder={activeScenario?.name ?? t('scenarios.namePlaceholder')}
               className="flex-1 bg-gray-700 border border-gray-600 rounded px-2 py-1 text-xs text-white outline-none focus:border-blue-500"
               autoFocus
             />
@@ -139,7 +143,7 @@ export function ScenarioPanel() {
       {/* Scenario list */}
       <div className="flex-1 overflow-y-auto px-2 py-2 flex flex-col gap-1">
         {scenarios.length === 0 && (
-          <p className="text-xs text-gray-500 text-center mt-4">אין תרחישים שמורים</p>
+          <p className="text-xs text-gray-500 text-center mt-4">{t('scenarios.empty')}</p>
         )}
         {scenarios.map(s => (
           <div
@@ -173,30 +177,30 @@ export function ScenarioPanel() {
                 <button
                   onClick={() => { setRenamingId(s.id); setRenameVal(s.name); }}
                   className="text-gray-500 hover:text-gray-300 text-xs px-0.5"
-                  title="שנה שם"
+                  title={t('scenarios.rename')}
                 >
                   ✎
                 </button>
                 <button
-                  onClick={() => duplicateScenario(s.id, `${s.name} (עותק)`)}
+                  onClick={() => duplicateScenario(s.id, `${s.name}${t('scenarios.duplicateSuffix')}`)}
                   className="text-gray-500 hover:text-gray-300 text-xs px-0.5"
-                  title="שכפל"
+                  title={t('scenarios.duplicate')}
                 >
                   ⧉
                 </button>
                 <button
                   onClick={() => {
-                    if (confirm(`למחוק את "${s.name}"?`)) deleteScenario(s.id);
+                    if (confirm(t('scenarios.confirmDelete', { name: s.name }))) deleteScenario(s.id);
                   }}
                   className="text-gray-500 hover:text-red-400 text-xs px-0.5"
-                  title="מחק"
+                  title={t('scenarios.delete')}
                 >
                   ✕
                 </button>
               </div>
             )}
             <div className="px-2 pb-1.5 text-[10px] text-gray-500">
-              עודכן: {new Date(s.updatedAt).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' })}
+              {t('scenarios.updatedAt')} {new Date(s.updatedAt).toLocaleString(locale, { dateStyle: 'short', timeStyle: 'short' })}
             </div>
           </div>
         ))}

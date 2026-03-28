@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { SectionCard } from '../ui/SectionCard';
 import type { RenovationEntry, TimingUnit } from '../../types';
 import { renovationToMonths } from '../../types';
@@ -8,13 +9,15 @@ interface Props {
   onChange: (entries: RenovationEntry[]) => void;
 }
 
-const TIMING_UNITS: { value: TimingUnit; label: string }[] = [
-  { value: 'days', label: 'ימים' },
-  { value: 'months', label: 'חודשים' },
-  { value: 'years', label: 'שנים' },
-];
-
 export function RenovationSection({ entries, onChange }: Props) {
+  const { t } = useTranslation();
+
+  const TIMING_UNITS: { value: TimingUnit; label: string }[] = [
+    { value: 'days', label: t('renovations.days') },
+    { value: 'months', label: t('renovations.months') },
+    { value: 'years', label: t('renovations.years') },
+  ];
+
   const add = () => {
     onChange([
       ...entries,
@@ -37,10 +40,10 @@ export function RenovationSection({ entries, onChange }: Props) {
   const total = entries.reduce((s, e) => s + e.estimatedCost, 0);
 
   return (
-    <SectionCard title="שיפוצים" badge={entries.length > 0 ? `${entries.length}` : undefined}>
+    <SectionCard title={t('renovations.title')} badge={entries.length > 0 ? `${entries.length}` : undefined}>
       <div className="flex flex-col gap-3">
         {entries.length === 0 && (
-          <p className="text-xs text-gray-500 text-center py-2">אין שיפוצים מתוכננים</p>
+          <p className="text-xs text-gray-500 text-center py-2">{t('renovations.empty')}</p>
         )}
 
         {entries.map((entry) => {
@@ -51,8 +54,8 @@ export function RenovationSection({ entries, onChange }: Props) {
               <input
                 value={entry.title}
                 onChange={e => update(entry.id, { title: e.target.value })}
-                aria-label="כותרת שיפוץ"
-                placeholder="כותרת שיפוץ"
+                aria-label={t('renovations.titleLabel')}
+                placeholder={t('renovations.titleLabel')}
                 className="flex-1 bg-gray-600 border border-gray-500 rounded px-2 py-1 text-sm text-white outline-none focus:border-blue-500 transition-colors"
               />
               <button
@@ -70,8 +73,8 @@ export function RenovationSection({ entries, onChange }: Props) {
                 type="number"
                 value={entry.estimatedCost}
                 onChange={e => update(entry.id, { estimatedCost: parseFloat(e.target.value) || 0 })}
-                aria-label="עלות מוערכת"
-                placeholder="עלות מוערכת"
+                aria-label={t('renovations.cost')}
+                placeholder={t('renovations.cost')}
                 min={0}
                 step={1000}
                 className="flex-1 bg-transparent px-2 py-1 text-sm text-white outline-none min-w-0"
@@ -80,12 +83,12 @@ export function RenovationSection({ entries, onChange }: Props) {
 
             {/* Timing */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400 flex-shrink-0">לאחר</span>
+              <span className="text-xs text-gray-400 flex-shrink-0">{t('renovations.after')}</span>
               <input
                 type="number"
                 value={entry.timingValue}
                 onChange={e => update(entry.id, { timingValue: parseFloat(e.target.value) || 0 })}
-                aria-label="תזמון שיפוץ"
+                aria-label={t('renovations.timing')}
                 min={0}
                 step={1}
                 className="w-14 bg-gray-600 border border-gray-500 rounded px-2 py-1 text-sm text-white outline-none text-center"
@@ -101,7 +104,7 @@ export function RenovationSection({ entries, onChange }: Props) {
               </select>
             </div>
             {isInitial && (
-              <span className="text-xs text-blue-400">נכלל בהשקעה הראשונית</span>
+              <span className="text-xs text-blue-400">{t('renovations.initialBadge')}</span>
             )}
           </div>
           );
@@ -111,12 +114,12 @@ export function RenovationSection({ entries, onChange }: Props) {
           onClick={add}
           className="w-full py-2 border border-dashed border-gray-600 rounded-lg text-sm text-gray-400 hover:border-blue-500 hover:text-blue-400 transition-colors"
         >
-          + הוסף שיפוץ
+          {t('renovations.add')}
         </button>
 
         {total > 0 && (
           <div className="flex items-center justify-between text-sm bg-gray-700 border border-gray-600 rounded-md px-3 py-2">
-            <span className="text-gray-400">סה"כ שיפוצים</span>
+            <span className="text-gray-400">{t('renovations.total')}</span>
             <span className="text-orange-400 font-semibold">{fmtILS(total)}</span>
           </div>
         )}

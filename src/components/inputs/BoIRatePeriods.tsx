@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { BoIRatePeriod } from '../../types';
 
 interface Props {
@@ -7,7 +8,10 @@ interface Props {
   label?: string;
 }
 
-export function BoIRatePeriods({ periods, durationYears, onChange, label = 'ריבית בנק ישראל לפי תקופה' }: Props) {
+export function BoIRatePeriods({ periods, durationYears, onChange, label }: Props) {
+  const { t } = useTranslation();
+  const resolvedLabel = label ?? t('mortgage.boiRates');
+
   const addPeriod = () => {
     const last = periods[periods.length - 1];
     const fromYear = last ? last.toYear + 1 : 1;
@@ -28,12 +32,12 @@ export function BoIRatePeriods({ periods, durationYears, onChange, label = 'רי
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-medium text-gray-400">{label}</label>
+        <label className="text-xs font-medium text-gray-400">{resolvedLabel}</label>
         <button
           onClick={addPeriod}
           className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
         >
-          + הוסף תקופה
+          {t('mortgage.addPeriod')}
         </button>
       </div>
 
@@ -42,7 +46,7 @@ export function BoIRatePeriods({ periods, durationYears, onChange, label = 'רי
           <div key={p.id} className="flex items-center gap-2 bg-gray-700 rounded-md px-2 py-1.5">
             <span className="text-xs text-gray-500 w-4">{i + 1}.</span>
             <div className="flex items-center gap-1 flex-1">
-              <span className="text-xs text-gray-400">שנה</span>
+              <span className="text-xs text-gray-400">{t('mortgage.year')}</span>
               <input
                 type="number"
                 value={p.fromYear}

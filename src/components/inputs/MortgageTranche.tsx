@@ -1,16 +1,10 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { MortgageTranche as MortgageTrancheType, MortgageType } from '../../types';
 import { InputField } from '../ui/InputField';
 import { SelectField } from '../ui/SelectField';
 import { BoIRatePeriods } from './BoIRatePeriods';
 import { fmtILS, fmtMonths } from '../../utils/formatters';
-
-const TYPE_OPTIONS: { value: MortgageType; label: string }[] = [
-  { value: 'prime', label: 'פריים' },
-  { value: 'fixed_unlinked', label: 'קבועה לא צמודה' },
-  { value: 'fixed_cpi', label: 'קבועה צמודה' },
-  { value: 'variable', label: 'משתנה כל X שנים' },
-];
 
 interface Props {
   tranche: MortgageTrancheType;
@@ -21,21 +15,31 @@ interface Props {
 }
 
 export function MortgancheTranche({ tranche: t, index, onChange, onRemove, canRemove }: Props) {
+  const { t: tr } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const update = <K extends keyof MortgageTrancheType>(key: K, value: MortgageTrancheType[K]) =>
     onChange({ ...t, [key]: value });
+
+  const TYPE_OPTIONS: { value: MortgageType; label: string }[] = [
+    { value: 'prime', label: tr('mortgage.typePrime') },
+    { value: 'fixed_unlinked', label: tr('mortgage.typeFixed') },
+    { value: 'fixed_cpi', label: tr('mortgage.typeFixedCpi') },
+    { value: 'variable', label: tr('mortgage.typeVariable') },
+  ];
 
   const durationYears = Math.ceil(t.durationMonths / 12);
   const isPrimeOrVariable = t.type === 'prime' || t.type === 'variable';
 
   const rateLabel =
-    t.type === 'prime' ? 'מרווח מפריים' :
-    t.type === 'variable' ? 'מרווח מבסיס' :
-    'ריבית שנתית';
+    t.type === 'prime' ? tr('mortgage.primespread') :
+    t.type === 'variable' ? tr('mortgage.variablespread') :
+    tr('mortgage.fixedRate');
 
   const spreadHint = isPrimeOrVariable
     ? `P${t.interestRate >= 0 ? '+' : ''}${t.interestRate}%`
     : undefined;
+
+  const boiLabel = t.type === 'prime' ? tr('mortgage.boiRates') : tr('mortgage.baseRates');
 
   return (
     <div className="border border-gray-600 rounded-lg overflow-hidden">
@@ -46,7 +50,7 @@ export function MortgancheTranche({ tranche: t, index, onChange, onRemove, canRe
           value={t.label}
           onChange={e => update('label', e.target.value)}
           className="flex-1 bg-transparent text-sm font-medium text-gray-100 outline-none"
-          placeholder="שם המסלול"
+          placeholder={tr('mortgage.trancheName')}
         />
         <span className="text-xs text-gray-400">{fmtILS(t.amount)} · {fmtMonths(t.durationMonths)}</span>
         <button
@@ -69,13 +73,13 @@ export function MortgancheTranche({ tranche: t, index, onChange, onRemove, canRe
         <div className="px-3 pb-3 pt-2 bg-gray-750 bg-gray-800 flex flex-col gap-3">
           <div className="grid grid-cols-2 gap-3">
             <SelectField
-              label="סוג המסלול"
+              label={tr('mortgage.trancheType')}
               value={t.type}
               options={TYPE_OPTIONS}
               onChange={v => update('type', v)}
             />
             <InputField
-              label="סכום"
+              label={tr('mortgage.amount')}
               value={t.amount}
               onChange={v => update('amount', v)}
               prefix="₪"
@@ -90,24 +94,24 @@ export function MortgancheTranche({ tranche: t, index, onChange, onRemove, canRe
               hint={spreadHint}
             />
             <InputField
-              label="תקופה"
+              label={tr('mortgage.duration')}
               value={t.durationMonths}
               onChange={v => update('durationMonths', Math.round(v))}
-              suffix="חודשים"
+              suffix={tr('mortgage.duration')}
               min={12} max={480} step={12}
             />
             {t.type === 'variable' && (
               <InputField
-                label="שינוי ריבית כל"
+                label={tr('mortgage.rateChangeEvery')}
                 value={t.rateChangeEveryYears}
                 onChange={v => update('rateChangeEveryYears', Math.round(v))}
-                suffix="שנים"
+                suffix={tr('property.years')}
                 min={1} max={10} step={1}
               />
             )}
             {t.type === 'fixed_cpi' && (
               <InputField
-                label="אינפלציה שנתית נניחה"
+                label={tr('mortgage.cpi')}
                 value={t.assumedAnnualCpiPct}
                 onChange={v => update('assumedAnnualCpiPct', v)}
                 suffix="%"
@@ -121,7 +125,7 @@ export function MortgancheTranche({ tranche: t, index, onChange, onRemove, canRe
               periods={t.boiRatePeriods}
               durationYears={durationYears}
               onChange={periods => update('boiRatePeriods', periods)}
-              label={t.type === 'prime' ? 'ריבית בנק ישראל לפי תקופה' : 'ריבית בסיס לפי תקופה'}
+              label={boiLabel}
             />
           )}
 
@@ -130,7 +134,7 @@ export function MortgancheTranche({ tranche: t, index, onChange, onRemove, canRe
             disabled={!canRemove}
             className="w-full py-1.5 text-xs rounded border border-dashed border-red-800 text-red-500 hover:bg-red-900/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            הסר מסלול
+            {tr('mortgage.removeTranche')}
           </button>
         </div>
       )}

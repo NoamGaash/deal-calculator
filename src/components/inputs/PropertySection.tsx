@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { SectionCard } from '../ui/SectionCard';
 import { InputField } from '../ui/InputField';
 import { SelectField } from '../ui/SelectField';
@@ -8,45 +9,46 @@ interface Props {
   onChange: (data: PropertyInputs) => void;
 }
 
-const PROPERTY_TYPE_OPTIONS: { value: PropertyType; label: string }[] = [
-  { value: 'additional', label: 'דירה להשקעה (נוספת)' },
-  { value: 'first', label: 'דירה ראשונה' },
-];
-
 export function PropertySection({ data, onChange }: Props) {
+  const { t } = useTranslation();
   const update = <K extends keyof PropertyInputs>(key: K, value: PropertyInputs[K]) =>
     onChange({ ...data, [key]: value });
 
+  const PROPERTY_TYPE_OPTIONS: { value: PropertyType; label: string }[] = [
+    { value: 'additional', label: t('property.typeAdditional') },
+    { value: 'first', label: t('property.typeFirst') },
+  ];
+
   return (
-    <SectionCard title="פרטי הנכס">
+    <SectionCard title={t('property.title')}>
       <div className="grid grid-cols-2 gap-3">
         <InputField
-          label="מחיר הנכס"
+          label={t('property.price')}
           value={data.price}
           onChange={v => update('price', v)}
           prefix="₪"
           min={0}
           step={10000}
-          tooltip="מחיר הרכישה המלא"
+          tooltip={t('property.priceTooltip')}
           className="col-span-2"
         />
         <InputField
-          label="הון עצמי"
+          label={t('property.equity')}
           value={data.equity}
           onChange={v => update('equity', v)}
           prefix="₪"
           min={0}
           step={10000}
-          tooltip="סכום ההון העצמי שתביא (לא כולל הוצאות רכישה)"
+          tooltip={t('property.equityTooltip')}
         />
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-gray-400">מינוף</label>
+          <label className="text-xs font-medium text-gray-400">{t('property.leverage')}</label>
           <div className="bg-gray-700 border border-gray-600 rounded-md px-2 py-1.5 text-sm text-gray-300">
             {data.price > 0 ? `${(((data.price - data.equity) / data.price) * 100).toFixed(1)}% LTV` : '—'}
           </div>
         </div>
         <InputField
-          label="עליית ערך שנתית"
+          label={t('property.appreciation')}
           value={data.appreciationRate}
           onChange={v => update('appreciationRate', v)}
           suffix="%"
@@ -55,16 +57,16 @@ export function PropertySection({ data, onChange }: Props) {
           step={0.5}
         />
         <InputField
-          label="תקופת החזקה"
+          label={t('property.holdingPeriod')}
           value={data.holdingPeriodYears}
           onChange={v => update('holdingPeriodYears', Math.round(v))}
-          suffix="שנים"
+          suffix={t('property.years')}
           min={1}
           max={40}
           step={1}
         />
         <SelectField
-          label="סוג הנכס"
+          label={t('property.propertyType')}
           value={data.propertyType}
           options={PROPERTY_TYPE_OPTIONS}
           onChange={v => update('propertyType', v)}

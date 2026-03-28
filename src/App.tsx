@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScenarioStore } from './store/useScenarioStore';
 import { runCalculation } from './calculations/index';
 import { ScenarioPanel } from './components/scenarios/ScenarioPanel';
@@ -12,6 +13,18 @@ import type { ScenarioData } from './types';
 
 export default function App() {
   const { current, updateCurrent } = useScenarioStore();
+  const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    document.documentElement.dir = i18n.language === 'he' ? 'rtl' : 'ltr';
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
+
+  const toggleLang = () => {
+    const next = i18n.language === 'he' ? 'en' : 'he';
+    i18n.changeLanguage(next);
+    localStorage.setItem('lang', next);
+  };
 
   const result = useMemo(() => {
     try {
@@ -25,12 +38,20 @@ export default function App() {
     updateCurrent({ ...current, [key]: value });
 
   return (
-    <div className="flex h-screen bg-gray-900 text-gray-100 overflow-hidden" dir="rtl">
+    <div className="flex h-screen bg-gray-900 text-gray-100 overflow-hidden" dir={i18n.language === 'he' ? 'rtl' : 'ltr'}>
       {/* Sidebar — scenarios */}
       <aside className="w-52 flex-shrink-0 border-l border-gray-700 flex flex-col min-h-0">
-        <div className="px-4 py-3 border-b border-gray-700 flex-shrink-0">
-          <h1 className="text-base font-bold text-white">מחשבון עסקה</h1>
-          <p className="text-xs text-gray-400">נדל"ן להשקעה</p>
+        <div className="px-4 py-3 border-b border-gray-700 flex-shrink-0 flex items-start justify-between">
+          <div>
+            <h1 className="text-base font-bold text-white">{t('app.title')}</h1>
+            <p className="text-xs text-gray-400">{t('app.subtitle')}</p>
+          </div>
+          <button
+            onClick={toggleLang}
+            className="text-xs px-1.5 py-0.5 mt-0.5 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors flex-shrink-0"
+          >
+            {i18n.language === 'he' ? 'EN' : 'עב'}
+          </button>
         </div>
         <div className="flex-1 min-h-0 overflow-hidden">
           <ScenarioPanel />
@@ -76,7 +97,7 @@ export default function App() {
           />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
-            שגיאה בחישוב — אנא בדוק את הנתונים
+            {t('app.calcError')}
           </div>
         )}
       </section>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { CalculationResult, MortgageTranche } from '../../types';
 import { SummaryCards } from './SummaryCards';
 import { CashflowChart } from './charts/CashflowChart';
@@ -15,12 +16,13 @@ interface Props {
 }
 
 export function ResultsPanel({ result, tranches, holdingYears }: Props) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>('summary');
 
   const tabs: { id: Tab; label: string }[] = [
-    { id: 'summary', label: 'סיכום' },
-    { id: 'charts', label: 'גרפים' },
-    { id: 'table', label: 'פירוט שנתי' },
+    { id: 'summary', label: t('results.tabSummary') },
+    { id: 'charts', label: t('results.tabCharts') },
+    { id: 'table', label: t('results.tabYearly') },
   ];
 
   return (
