@@ -71,6 +71,7 @@ export function RenovationSection({ entries, onChange }: Props) {
               <span className="px-2 text-gray-400 text-xs border-l border-gray-500 select-none">₪</span>
               <input
                 type="number"
+                dir="ltr"
                 value={entry.estimatedCost}
                 onChange={e => update(entry.id, { estimatedCost: parseFloat(e.target.value) || 0 })}
                 aria-label={t('renovations.cost')}
@@ -86,6 +87,7 @@ export function RenovationSection({ entries, onChange }: Props) {
               <span className="text-xs text-gray-400 flex-shrink-0">{t('renovations.after')}</span>
               <input
                 type="number"
+                dir="ltr"
                 value={entry.timingValue}
                 onChange={e => update(entry.id, { timingValue: parseFloat(e.target.value) || 0 })}
                 aria-label={t('renovations.timing')}

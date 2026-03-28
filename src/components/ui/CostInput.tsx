@@ -56,6 +56,7 @@ export function CostInput({ label, value, onChange, tooltip, className = '' }: P
         <input
           id={id}
           type="number"
+          dir="ltr"
           value={value.value}
           onChange={e => setValue(parseFloat(e.target.value) || 0)}
           min={0}

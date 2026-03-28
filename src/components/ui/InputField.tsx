@@ -50,6 +50,7 @@ export function InputField({ label, value, onChange, suffix, prefix, min, max, s
         <input
           id={id}
           type="number"
+          dir="ltr"
           value={value}
           onChange={e => onChange(parseFloat(e.target.value) || 0)}
           min={min}

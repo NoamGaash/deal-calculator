@@ -49,6 +49,7 @@ export function BoIRatePeriods({ periods, durationYears, onChange, label }: Prop
               <span className="text-xs text-gray-400">{t('mortgage.year')}</span>
               <input
                 type="number"
+                dir="ltr"
                 value={p.fromYear}
                 onChange={e => update(p.id, 'fromYear', parseInt(e.target.value) || 1)}
                 min={1}
@@ -58,6 +59,7 @@ export function BoIRatePeriods({ periods, durationYears, onChange, label }: Prop
               <span className="text-xs text-gray-400">–</span>
               <input
                 type="number"
+                dir="ltr"
                 value={p.toYear}
                 onChange={e => update(p.id, 'toYear', parseInt(e.target.value) || 1)}
                 min={1}
@@ -67,6 +69,7 @@ export function BoIRatePeriods({ periods, durationYears, onChange, label }: Prop
               <span className="text-xs text-gray-400">:</span>
               <input
                 type="number"
+                dir="ltr"
                 value={p.rate}
                 onChange={e => update(p.id, 'rate', parseFloat(e.target.value) || 0)}
                 min={0}
