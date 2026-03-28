@@ -27,6 +27,7 @@ export function RenovationSection({ entries, onChange }: Props) {
         estimatedCost: 0,
         timingValue: 0,
         timingUnit: 'months',
+        multiplier: 1.4,
       },
     ]);
   };
@@ -80,6 +81,28 @@ export function RenovationSection({ entries, onChange }: Props) {
                 step={1000}
                 className="flex-1 bg-transparent px-2 py-1 text-sm text-white outline-none min-w-0"
               />
+            </div>
+
+            {/* Value multiplier */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400 flex-shrink-0">{t('renovations.multiplierLabel')}</span>
+              <input
+                type="number"
+                dir="ltr"
+                value={entry.multiplier}
+                onChange={e => update(entry.id, { multiplier: parseFloat(e.target.value) || 1 })}
+                aria-label={t('renovations.multiplierLabel')}
+                min={0}
+                max={5}
+                step={0.1}
+                className="w-16 bg-gray-600 border border-gray-500 rounded px-2 py-1 text-sm text-white outline-none text-center"
+              />
+              <span className="text-xs text-gray-400">×</span>
+              {entry.multiplier > 1 && (
+                <span className="text-xs text-green-400">
+                  +{fmtILS(entry.estimatedCost * (entry.multiplier - 1))} {t('renovations.forcedEquity')}
+                </span>
+              )}
             </div>
 
             {/* Timing */}

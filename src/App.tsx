@@ -9,10 +9,11 @@ import { RenovationSection } from './components/inputs/RenovationSection';
 import { MortgageBuilder } from './components/inputs/MortgageBuilder';
 import { OngoingSection } from './components/inputs/OngoingSection';
 import { ResultsPanel } from './components/results/ResultsPanel';
+import { PrintView } from './components/results/PrintView';
 import type { ScenarioData } from './types';
 
 export default function App() {
-  const { current, updateCurrent } = useScenarioStore();
+  const { current, updateCurrent, scenarios, activeId } = useScenarioStore();
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -37,8 +38,11 @@ export default function App() {
   const update = <K extends keyof ScenarioData>(key: K, value: ScenarioData[K]) =>
     updateCurrent({ ...current, [key]: value });
 
+  const scenarioName = scenarios.find(s => s.id === activeId)?.name ?? t('scenarios.unsaved');
+
   return (
-    <div className="flex h-screen bg-gray-900 text-gray-100 overflow-hidden" dir={i18n.language === 'he' ? 'rtl' : 'ltr'}>
+    <>
+    <div className="flex h-screen bg-gray-900 text-gray-100 overflow-hidden print:hidden" dir={i18n.language === 'he' ? 'rtl' : 'ltr'}>
       {/* Sidebar — scenarios */}
       <aside className="w-52 flex-shrink-0 border-l border-gray-700 flex flex-col min-h-0">
         <div className="px-4 py-3 border-b border-gray-700 flex-shrink-0 flex items-start justify-between">
@@ -94,6 +98,8 @@ export default function App() {
             result={result}
             tranches={current.mortgageTranches}
             holdingYears={current.property.holdingPeriodYears}
+            data={current}
+            scenarioName={scenarioName}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
@@ -102,5 +108,15 @@ export default function App() {
         )}
       </section>
     </div>
+    {result && (
+      <PrintView
+        result={result}
+        tranches={current.mortgageTranches}
+        holdingYears={current.property.holdingPeriodYears}
+        data={current}
+        scenarioName={scenarioName}
+      />
+    )}
+    </>
   );
 }

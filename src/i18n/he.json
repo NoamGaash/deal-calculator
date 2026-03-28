@@ -16,7 +16,9 @@
     "years": "שנים",
     "propertyType": "סוג הנכס",
     "typeFirst": "דירה ראשונה",
-    "typeAdditional": "דירה להשקעה (נוספת)"
+    "typeAdditional": "דירה להשקעה (נוספת)",
+    "alternativeYield": "תשואת השקעה חלופית (benchmark)",
+    "alternativeYieldTooltip": "תשואה שנתית של השקעה חלופית (למשל S&P 500). משמש לגרף ההשוואה — אותו הון מושקע בריבית קבועה במקום נדל\"ן."
   },
   "purchaseCosts": {
     "title": "עלויות רכישה",
@@ -38,6 +40,8 @@
     "months": "חודשים",
     "years": "שנים",
     "initialBadge": "נכלל בהשקעה הראשונית",
+    "multiplierLabel": "מכפיל ערך",
+    "forcedEquity": "הון כפוי",
     "add": "+ הוסף שיפוץ",
     "total": "סה\"כ שיפוצים"
   },
@@ -109,7 +113,13 @@
   "results": {
     "tabSummary": "סיכום",
     "tabCharts": "גרפים",
-    "tabYearly": "פירוט שנתי"
+    "tabYearly": "פירוט שנתי",
+    "print": "🖨 הדפסה",
+    "copy": "📋 סיכום LLM",
+    "copied": "✓ הועתק!",
+    "summaryModalTitle": "סיכום עסקה",
+    "summaryPreview": "תצוגה",
+    "summaryRaw": "Markdown"
   },
   "summary": {
     "totalInvestment": "השקעה כוללת",
@@ -136,8 +146,8 @@
     "irr": "IRR (שנתי)",
     "irrSub": "תשואה פנימית",
     "equityMultiple": "מכפיל הון",
-    "breakEven": "שיבר-אבן שנה {{year}}",
-    "noBreakEven": "לא מגיע לשיבר-אבן",
+    "breakEven": "איזון תפעולי בשנת {{year}}",
+    "noBreakEven": "לא מגיע לאיזון תפעולי",
     "totalInterest": "ריבית כוללת",
     "totalInterestSub": "בתקופת ההחזקה ({{years}} שנה)",
     "totalCashOutflow": "סה\"כ תזרים יוצא",
@@ -178,6 +188,11 @@
     "cashflowTitle": "תזרים מזומנים שנתי",
     "equityTitle": "הון עצמי ורווח מצטבר",
     "mortgageTitle": "יתרת משכנתא לאורך זמן",
+    "comparisonTitle": "נדל\"ן מול השקעה חלופית",
+    "comparisonSubtitle": "אותו הון — הון בנכס + תזרים מול תיק בריבית קבועה (כולל השלמה בחודשי תזרים שלילי)",
+    "realEstateWealth": "נדל\"ן",
+    "alternativeWealth": "חלופי ({{pct}}% לשנה)",
+    "initialInvestment": "השקעה ראשונית",
     "yearLabel": "שנה {{year}}",
     "rent": "שכירות",
     "mortgagePayment": "משכנתא",

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { SummaryMetrics } from '../../types';
-import { fmtILS, fmtILSShort, fmtPct, fmtX } from '../../utils/formatters';
+import { fmtILS, fmtPct, fmtX } from '../../utils/formatters';
 
 interface CardProps {
   label: string;
@@ -42,20 +42,20 @@ export function SummaryCards({ summary: s, holdingYears }: Props) {
       <div className="grid grid-cols-3 gap-2">
         <Card
           label={t('summary.totalInvestment')}
-          value={fmtILSShort(s.totalInvestment)}
+          value={fmtILS(s.totalInvestment)}
           sub={s.totalInitialRenovations > 0 ? t('summary.totalInvestmentSubReno') : t('summary.totalInvestmentSub')}
           color="blue"
         />
         <Card
           label={t('summary.purchaseTax')}
           value={fmtILS(s.purchaseTax)}
-          sub={t('summary.purchaseTaxSub', { total: fmtILSShort(s.totalPurchaseCosts) })}
+          sub={t('summary.purchaseTaxSub', { total: fmtILS(s.totalPurchaseCosts) })}
           color="yellow"
         />
         <Card
           label={t('summary.ltv')}
           value={fmtPct(s.ltvPct)}
-          sub={t('summary.ltvSub', { amount: fmtILSShort(s.totalMortgage) })}
+          sub={t('summary.ltvSub', { amount: fmtILS(s.totalMortgage) })}
         />
       </div>
 
@@ -85,13 +85,13 @@ export function SummaryCards({ summary: s, holdingYears }: Props) {
       <div className="grid grid-cols-3 gap-2">
         <Card
           label={t('summary.totalInterest')}
-          value={fmtILSShort(s.totalInterestPaidHolding)}
+          value={fmtILS(s.totalInterestPaidHolding)}
           sub={t('summary.totalInterestSub', { years: holdingYears })}
           color="yellow"
         />
         <Card
           label={t('summary.totalCashOutflow')}
-          value={fmtILSShort(s.totalCashOutflow)}
+          value={fmtILS(s.totalCashOutflow)}
           sub={t('summary.totalCashOutflowSub')}
         />
         <Card
@@ -106,13 +106,13 @@ export function SummaryCards({ summary: s, holdingYears }: Props) {
       <div className="grid grid-cols-5 gap-2">
         <Card
           label={t('summary.netProfit', { years: holdingYears })}
-          value={fmtILSShort(s.totalNetProfit)}
-          sub={t('summary.netProfitSub', { price: fmtILSShort(s.projectedSalePrice) })}
+          value={fmtILS(s.totalNetProfit)}
+          sub={t('summary.netProfitSub', { price: fmtILS(s.projectedSalePrice) })}
           color={s.totalNetProfit >= 0 ? 'green' : 'red'}
         />
         <Card
           label={t('summary.capitalGainsTax')}
-          value={s.capitalGainsTax > 0 ? fmtILSShort(s.capitalGainsTax) : t('summary.capitalGainsTaxExempt')}
+          value={s.capitalGainsTax > 0 ? fmtILS(s.capitalGainsTax) : t('summary.capitalGainsTaxExempt')}
           sub={s.capitalGainsTax > 0 ? t('summary.capitalGainsTaxSubAdditional') : t('summary.capitalGainsTaxSubFirst')}
           color={s.capitalGainsTax > 0 ? 'red' : 'green'}
         />

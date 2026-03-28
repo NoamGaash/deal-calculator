@@ -129,7 +129,14 @@ export const useScenarioStore = create<ScenarioStore>()(
         const p = persisted as typeof current;
         const migrate = (data: typeof p.current) => ({
           ...data,
-          renovations: data.renovations ?? [],
+          renovations: (data.renovations ?? []).map(r => ({
+            ...r,
+            multiplier: r.multiplier ?? 1.0,
+          })),
+          property: {
+            ...data.property,
+            alternativeYieldPct: data.property.alternativeYieldPct ?? 7,
+          },
           purchaseCosts: {
             ...data.purchaseCosts,
             brokerCommission: data.purchaseCosts.brokerCommission

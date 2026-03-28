@@ -24,6 +24,7 @@ export const DEFAULT_SCENARIO: ScenarioData = {
     appreciationRate: 0,
     holdingPeriodYears: 10,
     propertyType: 'additional',
+    alternativeYieldPct: 7,
   },
   purchaseCosts: {
     brokerCommission: { value: 2, unit: 'pct' },

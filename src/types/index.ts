@@ -8,6 +8,7 @@ export interface PropertyInputs {
   appreciationRate: number; // % per year
   holdingPeriodYears: number;
   propertyType: PropertyType;
+  alternativeYieldPct: number; // % annual return of benchmark investment
 }
 
 // ── Cost value (NIS or %) ────────────────────────────────────────────────────
@@ -40,6 +41,7 @@ export interface RenovationEntry {
   estimatedCost: number;
   timingValue: number;
   timingUnit: TimingUnit;
+  multiplier: number; // value created per ₪1 spent (1.0 = cost equals value, 1.4 = 40% forced equity)
 }
 
 // Convert renovation timing to months after purchase
@@ -144,6 +146,7 @@ export interface YearlyRow {
   equity: number;
   trancheBalances: Record<string, number>;
   cumulativeNetCashflow: number;
+  alternativePortfolioValue: number;
 }
 
 export interface SummaryMetrics {

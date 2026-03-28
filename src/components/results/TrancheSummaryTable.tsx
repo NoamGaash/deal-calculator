@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { MortgageType, MortgageTranche, TrancheSchedule } from '../../types';
-import { fmtILS, fmtILSShort } from '../../utils/formatters';
+import { fmtILS } from '../../utils/formatters';
 
 const TYPE_KEY: Record<MortgageType, string> = {
   prime: 'mortgage.typePrime',
@@ -55,10 +55,10 @@ export function TrancheSummaryTable({ trancheSchedules, tranches, holdingMonths 
               <tr key={tranche.id} className="border-t border-gray-700 hover:bg-gray-700/40 transition-colors">
                 <td className="px-3 py-2 text-gray-200 font-medium">{tranche.label}</td>
                 <td className="px-3 py-2 text-gray-400">{t(TYPE_KEY[tranche.type])}</td>
-                <td className="px-3 py-2 text-blue-400">{fmtILSShort(tranche.amount)}</td>
+                <td className="px-3 py-2 text-blue-400">{fmtILS(tranche.amount)}</td>
                 <td className="px-3 py-2 text-gray-200">{fmtILS(month1Payment)}</td>
-                <td className="px-3 py-2 text-orange-400">{fmtILSShort(interestHolding)}</td>
-                <td className="px-3 py-2 text-gray-200">{fmtILSShort(totalPaidHolding)}</td>
+                <td className="px-3 py-2 text-orange-400">{fmtILS(interestHolding)}</td>
+                <td className="px-3 py-2 text-gray-200">{fmtILS(totalPaidHolding)}</td>
               </tr>
             ))}
           </tbody>

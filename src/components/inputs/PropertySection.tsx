@@ -72,6 +72,17 @@ export function PropertySection({ data, onChange }: Props) {
           onChange={v => update('propertyType', v)}
           className="col-span-2"
         />
+        <InputField
+          label={t('property.alternativeYield')}
+          value={data.alternativeYieldPct}
+          onChange={v => update('alternativeYieldPct', v)}
+          suffix="%"
+          min={0}
+          max={30}
+          step={0.5}
+          tooltip={t('property.alternativeYieldTooltip')}
+          className="col-span-2"
+        />
       </div>
     </SectionCard>
   );

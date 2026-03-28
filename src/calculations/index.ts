@@ -28,19 +28,30 @@ export function runCalculation(data: ScenarioData): CalculationResult {
   // ── Mortgage schedules ────────────────────────────────────────────────────
   const trancheSchedules: TrancheSchedule[] = mortgageTranches.map(amortizeTranche);
 
-  // ── Renovation cost lookup by year ───────────────────────────────────────
+  // ── Renovation lookups by year ────────────────────────────────────────────
+  // cashflow cost (actual spend, initial renos already counted in totalInvestment)
   const renovationsByYear: Record<number, number> = {};
+  // value-add (cost × multiplier, all renovations including initial which land in year 1)
+  const renovationValueAddByYear: Record<number, number> = {};
+
   for (const r of renovations) {
     const months = renovationToMonths(r);
-    if (months <= 0) continue; // already in initial investment
     const year = Math.max(1, Math.ceil(months / 12));
-    renovationsByYear[year] = (renovationsByYear[year] ?? 0) + r.estimatedCost;
+
+    if (months > 0) {
+      // future renos hit the cashflow in the year they occur
+      renovationsByYear[year] = (renovationsByYear[year] ?? 0) + r.estimatedCost;
+    }
+
+    // all renovations create value-add (initial ones land in year 1)
+    renovationValueAddByYear[year] = (renovationValueAddByYear[year] ?? 0) + r.estimatedCost * r.multiplier;
   }
 
   // ── Year-by-year rows ─────────────────────────────────────────────────────
   const holdingMonths = property.holdingPeriodYears * 12;
   const yearlyRows: YearlyRow[] = [];
   let cumulativeNetCashflow = 0;
+  let runningPropertyValue = property.price; // iterative base, updated each year
 
   for (let year = 1; year <= property.holdingPeriodYears; year++) {
     const startMonth = (year - 1) * 12 + 1;
@@ -67,7 +78,9 @@ export function runCalculation(data: ScenarioData): CalculationResult {
     const netCashflow = effectiveRentalIncome - totalExpenses;
     cumulativeNetCashflow += netCashflow;
 
-    const propertyValue = property.price * Math.pow(1 + property.appreciationRate / 100, year);
+    const valueAdd = renovationValueAddByYear[year] ?? 0;
+    runningPropertyValue = runningPropertyValue * (1 + property.appreciationRate / 100) + valueAdd;
+    const propertyValue = runningPropertyValue;
     const endOfYearMonth = Math.min(year * 12, holdingMonths);
     const mortgageBalance = totalBalance(trancheSchedules, endOfYearMonth);
 
@@ -95,7 +108,21 @@ export function runCalculation(data: ScenarioData): CalculationResult {
       equity: propertyValue - mortgageBalance,
       trancheBalances,
       cumulativeNetCashflow,
+      alternativePortfolioValue: 0, // filled in the alternative portfolio pass below
     });
+  }
+
+  // ── Alternative portfolio (shadow investment) ─────────────────────────────
+  // Same initial capital + top-up when real estate has negative cashflow,
+  // growing at a fixed annual rate (e.g. index fund benchmark).
+  {
+    const altRate = 1 + property.alternativeYieldPct / 100;
+    let altValue = totalInvestment;
+    for (const row of yearlyRows) {
+      if (row.netCashflow < 0) altValue += Math.abs(row.netCashflow);
+      altValue *= altRate;
+      row.alternativePortfolioValue = Math.round(altValue);
+    }
   }
 
   // ── Exit metrics ─────────────────────────────────────────────────────────

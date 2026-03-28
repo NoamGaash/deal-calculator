@@ -16,7 +16,9 @@
     "years": "years",
     "propertyType": "Property Type",
     "typeFirst": "First Home",
-    "typeAdditional": "Investment Property (Additional)"
+    "typeAdditional": "Investment Property (Additional)",
+    "alternativeYield": "Alternative Yield (benchmark)",
+    "alternativeYieldTooltip": "Annual return of the alternative investment (e.g. S&P 500). Used for the comparison chart — same capital invested at this rate instead of real estate."
   },
   "purchaseCosts": {
     "title": "Purchase Costs",
@@ -38,6 +40,8 @@
     "months": "months",
     "years": "years",
     "initialBadge": "Included in initial investment",
+    "multiplierLabel": "Value multiplier",
+    "forcedEquity": "forced equity",
     "add": "+ Add Renovation",
     "total": "Total Renovations"
   },
@@ -109,7 +113,13 @@
   "results": {
     "tabSummary": "Summary",
     "tabCharts": "Charts",
-    "tabYearly": "Yearly Detail"
+    "tabYearly": "Yearly Detail",
+    "print": "🖨 Print",
+    "copy": "📋 LLM Summary",
+    "copied": "✓ Copied!",
+    "summaryModalTitle": "Deal Summary",
+    "summaryPreview": "Preview",
+    "summaryRaw": "Markdown"
   },
   "summary": {
     "totalInvestment": "Total Investment",
@@ -178,6 +188,11 @@
     "cashflowTitle": "Annual Cash Flow",
     "equityTitle": "Equity & Cumulative Profit",
     "mortgageTitle": "Mortgage Balance Over Time",
+    "comparisonTitle": "Real Estate vs. Alternative Investment",
+    "comparisonSubtitle": "Same capital deployed — real estate equity + cashflows vs. fixed-rate portfolio (topped up on negative cashflow months)",
+    "realEstateWealth": "Real Estate",
+    "alternativeWealth": "Alternative ({{pct}}%/yr)",
+    "initialInvestment": "Initial investment",
     "yearLabel": "Year {{year}}",
     "rent": "Rent",
     "mortgagePayment": "Mortgage",
