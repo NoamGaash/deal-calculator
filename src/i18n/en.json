@@ -2,7 +2,8 @@
   "app": {
     "title": "Deal Calculator",
     "subtitle": "Real Estate Investment",
-    "calcError": "Calculation error — please check the inputs"
+    "calcError": "Calculation error — please check the inputs",
+    "inputsTitle": "Inputs"
   },
   "property": {
     "title": "Property Details",
